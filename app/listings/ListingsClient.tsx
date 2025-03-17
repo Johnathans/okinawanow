@@ -132,18 +132,25 @@ export default function ListingsClient() {
   return (
     <div className="d-flex flex-column min-vh-100">
       {/* Filter Bar */}
-      <div className="bg-white border-bottom">
+      <div className="bg-light border-bottom">
         <div className="container-fluid px-4">
           <FilterBar />
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="flex-grow-1">
+      <div className="flex-grow-1 position-relative">
         <div className="container-fluid px-4">
           <div className="row g-0">
             {/* Listings Section */}
-            <div className={`${showMap ? 'col-md-6 col-lg-7' : 'col-12'} bg-white`} style={{ minHeight: 'calc(100vh - 180px)' }}>
+            <div 
+              className={`${showMap ? 'col-md-6 col-lg-7' : 'col-12'} bg-white`} 
+              style={{ 
+                height: 'calc(100vh - 180px)',
+                overflowY: 'auto',
+                position: 'relative'
+              }}
+            >
               <div className="py-4">
                 {listings.length === 0 ? (
                   <div className="text-center">
@@ -215,19 +222,23 @@ export default function ListingsClient() {
 
             {/* Map Section */}
             {showMap && (
-              <div className="col-md-6 col-lg-5">
-                <div className="position-sticky" style={{ height: 'calc(100vh - 180px)', top: '73px' }}>
-                  <Map
-                    center={{ lat: 26.3344, lng: 127.7997 }}
-                    markers={listings.map(listing => ({
-                      id: listing.id,
-                      lat: listing.lat || 0,
-                      lng: listing.lng || 0,
-                      price: listing.price,
-                    }))}
-                    hoveredListing={hoveredListing}
-                  />
-                </div>
+              <div className="col-md-6 col-lg-5 d-none d-md-block" style={{ 
+                height: 'calc(100vh - 180px)',
+                position: 'sticky',
+                top: '180px'
+              }}>
+                <Map 
+                  listings={listings}
+                  hoveredListing={hoveredListing}
+                  style={{ height: '100%', width: '100%' }}
+                  markers={listings.map(listing => ({
+                    id: listing.id,
+                    lat: listing.lat || 0,
+                    lng: listing.lng || 0,
+                    price: listing.price,
+                  }))}
+                  center={{ lat: 26.3344, lng: 127.7997 }}
+                />
               </div>
             )}
           </div>

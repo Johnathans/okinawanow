@@ -10,14 +10,15 @@ interface MapProps {
     lng: number;
     price: number;
   }>;
-  hoveredListing?: string;
+  hoveredListing?: string | null;
   center: {
     lat: number;
     lng: number;
   };
+  style?: React.CSSProperties;
 }
 
-const Map = ({ markers, hoveredListing, center }: MapProps) => {
+const Map = ({ markers, hoveredListing, center, style }: MapProps) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const markersRef = useRef<{ [key: string]: google.maps.Marker }>({});
   const mapInstanceRef = useRef<google.maps.Map | null>(null);
@@ -140,7 +141,8 @@ const Map = ({ markers, hoveredListing, center }: MapProps) => {
         position: 'relative',
         width: '100%',
         height: '100%',
-        minHeight: '500px'
+        minHeight: '500px',
+        ...style
       }}
     >
       <div 

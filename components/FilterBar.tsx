@@ -124,8 +124,8 @@ export default function FilterBar() {
   };
 
   return (
-    <div className="filter-bar bg-white border-bottom">
-      <div className="container-fluid px-4 py-3">
+    <div className="filter-bar py-3">
+      <div className="container-fluid px-4">
         <div className="row g-2">
           <div className="col">
             <div className="d-flex gap-2 align-items-center">

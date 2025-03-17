@@ -127,65 +127,67 @@ export default function Home() {
           borderRadius: '0 0 40px 40px'
         }}
       >
-        <div className="container-fluid px-4 text-center py-5">
-          <h1 className="display-4 fw-black mb-4" style={{ color: 'var(--dark-grey)', fontWeight: 900 }}>
-            Find your home in Okinawa.
-          </h1>
-          <p className="lead fw-bolder mb-5" style={{ fontSize: '1.3rem', color: 'var(--dark-grey)', opacity: 0.9, fontWeight: 700 }}>
-            Find and reserve military-friendly housing in minutes.
-          </p>
-          
-          {/* Filter Tabs */}
-          <div className="d-flex justify-content-center gap-2 mb-4">
-            <button 
-              className="btn px-4 py-2" 
-              style={{ 
-                background: 'var(--primary-pink)', 
-                color: 'white',
-                borderRadius: '8px'
-              }}
-            >
-              All Properties
-            </button>
-            <button 
-              className="btn px-4 py-2" 
-              style={{ 
-                border: '1px solid var(--primary-pink)', 
-                color: 'var(--primary-pink)',
-                borderRadius: '8px'
-              }}
-            >
-              Military-Approved
-            </button>
-            <button 
-              className="btn px-4 py-2" 
-              style={{ 
-                border: '1px solid var(--primary-pink)', 
-                color: 'var(--primary-pink)',
-                borderRadius: '8px'
-              }}
-            >
-              Pet-Friendly
-            </button>
-            <button 
-              className="btn px-4 py-2" 
-              style={{ 
-                border: '1px solid var(--primary-pink)', 
-                color: 'var(--primary-pink)',
-                borderRadius: '8px'
-              }}
-            >
-              Near Bases
-            </button>
-          </div>
+        <div className="container">
+          <div className="text-center py-5">
+            <h1 className="display-4 fw-black mb-4" style={{ color: 'var(--dark-grey)', fontWeight: 900 }}>
+              Find your home in Okinawa.
+            </h1>
+            <p className="lead fw-bolder mb-5" style={{ fontSize: '1.3rem', color: 'var(--dark-grey)', opacity: 0.9, fontWeight: 700 }}>
+              Find and reserve military-friendly housing in minutes.
+            </p>
+            
+            {/* Filter Tabs */}
+            <div className="d-flex justify-content-center gap-2 mb-4">
+              <button 
+                className="btn px-4 py-2" 
+                style={{ 
+                  background: 'var(--primary-pink)', 
+                  color: 'white',
+                  borderRadius: '8px'
+                }}
+              >
+                All Properties
+              </button>
+              <button 
+                className="btn px-4 py-2" 
+                style={{ 
+                  border: '1px solid var(--primary-pink)', 
+                  color: 'var(--primary-pink)',
+                  borderRadius: '8px'
+                }}
+              >
+                Military-Approved
+              </button>
+              <button 
+                className="btn px-4 py-2" 
+                style={{ 
+                  border: '1px solid var(--primary-pink)', 
+                  color: 'var(--primary-pink)',
+                  borderRadius: '8px'
+                }}
+              >
+                Pet-Friendly
+              </button>
+              <button 
+                className="btn px-4 py-2" 
+                style={{ 
+                  border: '1px solid var(--primary-pink)', 
+                  color: 'var(--primary-pink)',
+                  borderRadius: '8px'
+                }}
+              >
+                Near Bases
+              </button>
+            </div>
 
-          {/* Search Bar */}
-          <SearchBar />
+            {/* Search Bar */}
+            <SearchBar />
 
-          <div className="mt-5">
-            {/* Illustration Banner */}
-            <div className="position-absolute bottom-0 start-50 translate-middle-x" style={{ width: '100%', maxWidth: '1200px' }}>
-              <HeroIllustration />
+            <div className="mt-5">
+              {/* Illustration Banner */}
+              <div className="position-absolute bottom-0 start-50 translate-middle-x" style={{ width: '100%', maxWidth: '1200px' }}>
+                <HeroIllustration />
+              </div>
             </div>
           </div>
         </div>
@@ -193,7 +195,7 @@ export default function Home() {
 
       {/* Featured Properties */}
       <section className="py-5">
-        <div className="container-fluid px-4">
+        <div className="container">
           <div className="text-center mb-5">
             <h2 className="h3 fw-bold mb-2">Featured Properties</h2>
             <p className="text-muted mb-0">Discover our handpicked selection of military-friendly homes</p>
@@ -298,7 +300,7 @@ export default function Home() {
 
       {/* Neighborhoods */}
       <section className="py-5 bg-light">
-        <div className="container-fluid px-4">
+        <div className="container">
           <div className="text-center mb-5">
             <h2 className="h3 fw-bold mb-2">Featured City Guides</h2>
             <p className="text-muted mb-0">Explore the most popular areas for military families in Okinawa</p>
@@ -372,7 +374,7 @@ export default function Home() {
 
       {/* FAQ Section */}
       <section className="py-5">
-        <div className="container-fluid px-4">
+        <div className="container">
           <div className="text-center mb-5">
             <h2 className="h3 fw-bold mb-2" style={{ color: '#e75d7c' }}>Frequently Asked Questions</h2>
             <p className="text-muted mb-0">Everything you need to know about finding housing in Okinawa</p>
