@@ -1,0 +1,252 @@
+@import "bootstrap/scss/bootstrap";
+
+:root {
+  --primary-pink: #e75d7c;
+  --light-pink: #fdf2f4;
+  --medium-pink: #f4c6ce;
+  --dark-pink: #d64d6c;
+  --z-dropdown: 9999;
+  --z-navbar: 1030;
+  --z-filterbar: 1020;
+}
+
+/* Override Bootstrap theme colors */
+$theme-colors: (
+  "primary": var(--primary-pink),
+  "secondary": var(--medium-pink),
+  "light": var(--light-pink),
+);
+
+/* Global styles */
+body {
+  background-color: var(--light-pink);
+  &.modal-open {
+    overflow: hidden;
+    padding-right: 15px; /* Prevents content shift when modal opens */
+  }
+}
+
+/* Button styles */
+.btn-primary {
+  background-color: var(--primary-pink);
+  border-color: var(--primary-pink);
+  &:hover {
+    background-color: var(--dark-pink);
+    border-color: var(--dark-pink);
+  }
+}
+
+.btn-outline-primary {
+  color: var(--primary-pink);
+  border-color: var(--primary-pink);
+  &:hover {
+    background-color: var(--primary-pink);
+    border-color: var(--primary-pink);
+  }
+}
+
+/* Link styles */
+a {
+  color: var(--primary-pink);
+  text-decoration: none;
+  &:hover {
+    color: var(--dark-pink);
+  }
+}
+
+/* Form styles */
+.form-control:focus {
+  border-color: var(--primary-pink);
+  box-shadow: 0 0 0 0.2rem rgba(231, 93, 124, 0.25);
+}
+
+/* Custom utilities */
+.bg-pink {
+  background-color: var(--primary-pink);
+}
+
+.text-pink {
+  color: var(--primary-pink);
+}
+
+.border-pink {
+  border-color: var(--primary-pink);
+}
+
+/* Navbar styles */
+.navbar {
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  z-index: var(--z-navbar);
+  position: relative;
+  height: 60px;
+
+  .nav-link {
+    color: #666;
+    &:hover {
+      color: var(--primary-pink);
+    }
+    &.active {
+      color: var(--primary-pink);
+    }
+  }
+
+  .dropdown-menu {
+    border: 1px solid var(--medium-pink);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    min-width: 200px;
+    margin-top: 0;
+
+    &.mega-menu {
+      width: 600px;
+      padding: 24px;
+    }
+  }
+
+  @media (max-width: 991.98px) {
+    .dropdown-menu {
+      &.mega-menu {
+        width: 100%;
+        margin: 0;
+        border-radius: 0;
+        box-shadow: none;
+        background-color: #f8f9fa;
+      }
+    }
+  }
+}
+
+/* Filter bar styles */
+.filter-bar {
+  background-color: var(--light-pink);
+}
+
+/* Dropdown menu styles */
+.dropdown-menu {
+  z-index: var(--z-dropdown) !important;
+}
+
+.dropdown-menu.mega-menu {
+  margin: 0;
+  border-radius: 0;
+  width: 100% !important;
+  background: white;
+}
+
+/* Main container width control (only for non-listings pages) */
+body:not(.listings-layout) {
+  .main-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+}
+
+/* Remove any width constraints for listings pages */
+.listings-layout {
+  width: 100vw;
+  max-width: 100%;
+  overflow-x: hidden;
+  
+  .navbar .container-fluid,
+  .footer .container-fluid {
+    padding: 0 1.5rem;
+  }
+  .navbar,
+  .footer,
+  main {
+    width: 100vw;
+    max-width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+}
+
+/* Modal styles */
+.modal {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-backdrop {
+  opacity: 0.5;
+}
+
+.modal-content {
+  border-radius: 12px;
+  overflow: hidden;
+
+  .modal-header {
+    background-color: white;
+    padding: 1.5rem;
+
+    .modal-title {
+      font-weight: 600;
+      color: #333;
+    }
+  }
+
+  .modal-body {
+    padding: 1.5rem;
+
+    .btn-outline-dark {
+      border-width: 2px;
+      font-weight: 500;
+      padding: 0.75rem 1rem;
+
+      &:hover {
+        background-color: #f8f9fa;
+        color: #333;
+      }
+    }
+
+    .text-muted {
+      position: relative;
+      text-align: center;
+      margin: 1.5rem 0;
+
+      &::before,
+      &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        width: 45%;
+        height: 1px;
+        background-color: #dee2e6;
+      }
+
+      &::before {
+        left: 0;
+      }
+
+      &::after {
+        right: 0;
+      }
+    }
+
+    .form-control {
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: 2px solid #dee2e6;
+      transition: all 0.2s;
+
+      &:focus {
+        border-color: var(--primary-pink);
+        box-shadow: 0 0 0 0.2rem rgba(231, 93, 124, 0.1);
+      }
+    }
+
+    .btn-link {
+      color: var(--primary-pink);
+      text-decoration: none;
+      padding: 0;
+
+      &:hover {
+        color: var(--dark-pink);
+        text-decoration: underline;
+      }
+    }
+  }
+}

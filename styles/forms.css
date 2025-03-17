@@ -1,0 +1,55 @@
+/* Custom Form Styles */
+.form-range::-webkit-slider-thumb {
+  background-color: #e75d7c !important;
+}
+
+.form-range::-moz-range-thumb {
+  background-color: #e75d7c !important;
+}
+
+.form-range::-webkit-slider-runnable-track {
+  background-color: #f4c6ce !important;
+}
+
+.form-range::-moz-range-track {
+  background-color: #f4c6ce !important;
+}
+
+/* Form Control Focus States */
+.form-control:focus,
+.form-select:focus {
+  border-color: #e75d7c !important;
+  box-shadow: 0 0 0 0.25rem rgba(231, 93, 124, 0.25) !important;
+}
+
+/* Selected Card States */
+.border-primary {
+  border-color: #e75d7c !important;
+}
+
+.bg-light {
+  background-color: #fdf2f4 !important;
+}
+
+.text-primary {
+  color: #e75d7c !important;
+}
+
+/* Button States */
+.btn-primary {
+  background-color: #e75d7c !important;
+  border-color: #e75d7c !important;
+  color: #fff !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+  background-color: #d64d6c !important;
+  border-color: #d64d6c !important;
+  color: #fff !important;
+}
+
+.btn-primary:focus {
+  box-shadow: 0 0 0 0.25rem rgba(231, 93, 124, 0.25) !important;
+}

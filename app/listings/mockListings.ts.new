@@ -1,0 +1,112 @@
+const mockListings: Listing[] = [
+  {
+    "id": 1000,
+    "title": "Spacious Unit with Ocean View",
+    "location": "Okinawa City",
+    "price": 150000,
+    "beds": 2,
+    "baths": 1,
+    "sqm": 75,
+    "image": "https://www.acefamilyhousing.com/wp-content/uploads/2025/03/IMG-9323.jpg",
+    "nearestBase": "Kadena Air Base",
+    "propertyType": "Apartments"
+  },
+  {
+    "id": 1001,
+    "title": "Spacious 1st Floor Unit",
+    "location": "Chatan",
+    "price": 302000,
+    "beds": 3,
+    "baths": 2,
+    "sqm": 120,
+    "image": "https://www.acefamilyhousing.com/wp-content/uploads/2025/03/IMG-5214.jpg",
+    "nearestBase": "Camp Foster",
+    "propertyType": "Apartments"
+  },
+  {
+    "id": 1002,
+    "title": "Duplex close to Kadena",
+    "location": "Okinawa City",
+    "price": 203000,
+    "beds": 3,
+    "baths": 2,
+    "sqm": 95,
+    "image": "https://www.acefamilyhousing.com/wp-content/uploads/2025/03/IMG-6114.jpg",
+    "nearestBase": "Kadena Air Base",
+    "propertyType": "Apartments"
+  },
+  {
+    "id": 1003,
+    "title": "Modern Duplex",
+    "location": "Kin",
+    "price": 311000,
+    "beds": 4,
+    "baths": 2,
+    "sqm": 130,
+    "image": "https://www.acefamilyhousing.com/wp-content/uploads/2025/03/IMG-9628.jpg",
+    "nearestBase": "Camp Hansen",
+    "propertyType": "Apartments"
+  },
+  {
+    "id": 1004,
+    "title": "Sunabe Unit",
+    "location": "Chatan",
+    "price": 413000,
+    "beds": 3,
+    "baths": 2,
+    "sqm": 110,
+    "image": "https://www.acefamilyhousing.com/wp-content/uploads/2025/03/IMG_3360.jpg",
+    "nearestBase": "Camp Foster",
+    "propertyType": "Apartments"
+  },
+  {
+    "id": 1005,
+    "title": "Modern Unit by Rycom Mall",
+    "location": "Kitanakagusuku",
+    "price": 314000,
+    "beds": 3,
+    "baths": 2,
+    "sqm": 105,
+    "image": "https://www.acefamilyhousing.com/wp-content/uploads/2025/03/IMG_2992.jpg",
+    "nearestBase": "Camp Foster",
+    "propertyType": "Apartments"
+  },
+  {
+    "id": 1006,
+    "title": "Spacious Unit close to Araha Beach",
+    "location": "Ginowan",
+    "price": 345000,
+    "beds": 3,
+    "baths": 2,
+    "sqm": 115,
+    "image": "https://www.acefamilyhousing.com/wp-content/uploads/2025/03/IMG-6594.jpg",
+    "nearestBase": "Camp Foster",
+    "propertyType": "Apartments"
+  },
+  {
+    "id": 1007,
+    "title": "Brand New House",
+    "location": "Okinawa City",
+    "price": 200000,
+    "beds": 4,
+    "baths": 2,
+    "sqm": 140,
+    "image": "https://www.acefamilyhousing.com/wp-content/uploads/2025/03/IMG_4472.jpg",
+    "nearestBase": "Kadena Air Base",
+    "propertyType": "Apartments"
+  },
+  {
+    "id": 1008,
+    "title": "Traditional Style",
+    "location": "Okinawa City",
+    "price": 170000,
+    "beds": 2,
+    "baths": 1,
+    "sqm": 80,
+    "image": "https://www.acefamilyhousing.com/wp-content/uploads/2025/02/IMG_4299.jpg",
+    "nearestBase": "Kadena Air Base",
+    "propertyType": "Apartments"
+  }
+];
+
+export default mockListings;
