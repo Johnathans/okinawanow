@@ -1,20 +1,38 @@
-import { auth } from '@clerk/nextjs';
 import { NextResponse, NextRequest } from 'next/server';
 import { db } from '@/lib/firebase';
 import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
 import { UserProfile } from '@/types/profile';
+import { getAuth } from 'firebase-admin/auth';
+import { adminApp } from '@/lib/firebase-admin';
+
+// Helper function to verify Firebase ID token
+async function verifyAuthToken(req: NextRequest) {
+  try {
+    const authHeader = req.headers.get('authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      return null;
+    }
+
+    const token = authHeader.split('Bearer ')[1];
+    const decodedToken = await getAuth(adminApp).verifyIdToken(token);
+    return decodedToken.uid;
+  } catch (error) {
+    console.error('Error verifying token:', error);
+    return null;
+  }
+}
 
 export async function GET(request: NextRequest) {
   try {
-    const user = auth.currentUser;
-    if (!user) {
+    const userId = await verifyAuthToken(request);
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
       );
     }
 
-    const userRef = doc(db, 'users', user.uid);
+    const userRef = doc(db, 'users', userId);
     const userDoc = await getDoc(userRef);
 
     if (!userDoc.exists()) {
@@ -36,8 +54,8 @@ export async function GET(request: NextRequest) {
 
 export async function PATCH(request: NextRequest) {
   try {
-    const user = auth.currentUser;
-    if (!user) {
+    const userId = await verifyAuthToken(request);
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -45,7 +63,7 @@ export async function PATCH(request: NextRequest) {
     }
 
     const data = await request.json();
-    const userRef = doc(db, 'users', user.uid);
+    const userRef = doc(db, 'users', userId);
 
     // Only allow updating specific fields
     const allowedFields = ['firstName', 'lastName', 'phoneNumber', 'preferences'];
@@ -73,8 +91,7 @@ export async function PATCH(request: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    // Get the user ID from Clerk
-    const { userId } = auth();
+    const userId = await verifyAuthToken(req);
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
