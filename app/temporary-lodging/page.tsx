@@ -1,10 +1,15 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faUtensils,
   faWifi,
   faParking,
-  faKitchen,
+  faBed,
+  faBath,
+  faRuler,
+  faCalendar,
+  faMoneyBill,
+  faMapMarkerAlt,
   faPaw,
-  faUtensils,
   faCar,
   faPhone,
   faGlobe,
@@ -30,7 +35,7 @@ export default function TemporaryLodgingPage() {
       amenities: [
         { name: 'Free Wi-Fi', icon: faWifi },
         { name: 'Parking', icon: faParking },
-        { name: 'Kitchenette', icon: faKitchen },
+        { name: 'Kitchenette', icon: faUtensils },
         { name: 'Pet Friendly', icon: faPaw }
       ],
       features: [
@@ -56,7 +61,7 @@ export default function TemporaryLodgingPage() {
       amenities: [
         { name: 'Free Wi-Fi', icon: faWifi },
         { name: 'Parking', icon: faParking },
-        { name: 'Kitchenette', icon: faKitchen },
+        { name: 'Kitchenette', icon: faUtensils },
         { name: 'Restaurant', icon: faUtensils }
       ],
       features: [

@@ -1,5 +1,6 @@
-import { initializeApp, getApps } from 'firebase/app';
+import { initializeApp, getApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
 import { getAuth } from 'firebase/auth';
 
 const firebaseConfig = {
@@ -11,11 +12,17 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
 };
 
-// Initialize Firebase
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
+function createFirebaseApp() {
+  try {
+    return getApp();
+  } catch {
+    return initializeApp(firebaseConfig);
+  }
+}
 
-// Initialize Firestore
-export const db = getFirestore(app);
+const app = createFirebaseApp();
+const db = getFirestore(app);
+const storage = getStorage(app);
+const auth = getAuth(app);
 
-// Initialize Auth
-export const auth = getAuth(app);
+export { app, db, storage, auth };

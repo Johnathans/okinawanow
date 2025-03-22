@@ -15,19 +15,20 @@ import {
   faShare,
   faCar,
   faDog,
-  faWifi,
   faSnowflake,
-  faShieldAlt,
-  faHome,
-  faYenSign,
-  faRulerCombined,
+  faKey,
+  faBuilding,
+  faShield,
+  faUtensils,
+  faWifi,
+  faLock,
+  faParking,
   faBed,
   faBath,
-  faCalendarAlt,
-  faKey,
-  faHandshake,
-  faBuilding,
-  faShieldCheck
+  faRuler,
+  faCalendar,
+  faMoneyBill,
+  faMapMarkerAlt
 } from '@fortawesome/free-solid-svg-icons';
 import { faHeart as faHeartRegular } from '@fortawesome/free-regular-svg-icons';
 import { Property, PropertyType, PetPolicy } from '@/types/property';
@@ -155,7 +156,7 @@ export default function ListingPage({ params, isLoggedIn }: ListingPageProps) {
                       padding: '6px 12px',
                       fontSize: '0.9rem'
                     }}>
-                      <FontAwesomeIcon icon={faShieldCheck} className="me-1" />
+                      <FontAwesomeIcon icon={faShield} className="me-1" />
                       Base Inspected
                     </div>
                   )}
@@ -262,7 +263,7 @@ export default function ListingPage({ params, isLoggedIn }: ListingPageProps) {
                 <div className="row g-4">
                   <div className="col-6 col-md-3">
                     <div className="d-flex flex-column gap-2">
-                      <FontAwesomeIcon icon={faYenSign} className="text-pink" size="lg" />
+                      <FontAwesomeIcon icon={faMoneyBill} className="text-pink" size="lg" />
                       <div className="small text-muted">Monthly Rent</div>
                       <div>
                         <div className="fw-bold">¥{listing.price.toLocaleString()}</div>
@@ -286,7 +287,7 @@ export default function ListingPage({ params, isLoggedIn }: ListingPageProps) {
                   </div>
                   <div className="col-6 col-md-3">
                     <div className="d-flex flex-column gap-2">
-                      <FontAwesomeIcon icon={faRulerCombined} className="text-pink" size="lg" />
+                      <FontAwesomeIcon icon={faRuler} className="text-pink" size="lg" />
                       <div className="small text-muted">Floor Area</div>
                       <div className="fw-bold">{listing.floorArea}m²</div>
                     </div>
@@ -350,7 +351,7 @@ export default function ListingPage({ params, isLoggedIn }: ListingPageProps) {
                   </div>
                   {listing.nearestBase && (
                     <div className="d-flex align-items-center gap-2 text-muted">
-                      <FontAwesomeIcon icon={faShieldAlt} />
+                      <FontAwesomeIcon icon={faShield} />
                       <span>Near {listing.nearestBase}</span>
                     </div>
                   )}
@@ -416,7 +417,7 @@ export default function ListingPage({ params, isLoggedIn }: ListingPageProps) {
                         </div>
                       </li>
                       <li className="d-flex align-items-center gap-3 mb-3">
-                        <FontAwesomeIcon icon={faCalendarAlt} className="text-pink" />
+                        <FontAwesomeIcon icon={faCalendar} className="text-pink" />
                         <div>
                           <div className="small text-muted">Available From</div>
                           <div className="fw-medium">{formatDate(listing.availableFrom)}</div>
