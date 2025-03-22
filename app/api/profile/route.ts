@@ -1,9 +1,7 @@
-import { NextResponse, NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 import { db } from '@/lib/firebase';
-import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { UserProfile } from '@/types/profile';
-import { getAuth } from 'firebase-admin/auth';
-import { adminApp } from '@/lib/firebase-admin';
 
 // Helper function to verify Firebase ID token
 async function verifyAuthToken(req: NextRequest) {
@@ -32,21 +30,53 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const userRef = doc(db, 'users', userId);
-    const userDoc = await getDoc(userRef);
+    const { searchParams } = new URL(request.url);
+    const userIdParam = searchParams.get('userId');
 
+    if (!userIdParam) {
+      return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
+    }
+
+    const userDoc = await getDoc(doc(db, 'users', userIdParam));
+    
     if (!userDoc.exists()) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    const userData = userDoc.data() as UserProfile;
+    return NextResponse.json(userData);
+  } catch (error) {
+    console.error('Error fetching user profile:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch user profile' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    const userId = await verifyAuthToken(req);
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const body = await req.json();
+    const { profile } = body as { profile: UserProfile };
+
+    if (!profile) {
       return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
+        { error: 'Profile data is required' },
+        { status: 400 }
       );
     }
 
-    return NextResponse.json(userDoc.data());
+    await setDoc(doc(db, 'users', userId), profile);
+    return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error getting profile:', error);
+    console.error('Error updating user profile:', error);
     return NextResponse.json(
-      { error: 'Internal Server Error' },
+      { error: 'Failed to update user profile' },
       { status: 500 }
     );
   }
@@ -81,83 +111,6 @@ export async function PATCH(request: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error updating profile:', error);
-    return NextResponse.json(
-      { error: 'Internal Server Error' },
-      { status: 500 }
-    );
-  }
-}
-
-export async function POST(req: NextRequest) {
-  try {
-    const userId = await verifyAuthToken(req);
-    if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    // Parse request body
-    let profile: UserProfile;
-    try {
-      profile = await req.json();
-    } catch (error) {
-      return NextResponse.json({ 
-        error: 'Bad Request', 
-        details: 'Invalid JSON in request body' 
-      }, { status: 400 });
-    }
-
-    // Validate profile data
-    if (!profile || typeof profile !== 'object') {
-      return NextResponse.json({ 
-        error: 'Bad Request', 
-        details: 'Profile data must be an object' 
-      }, { status: 400 });
-    }
-
-    // Validate that the profile belongs to the authenticated user
-    if (profile.id !== userId) {
-      return NextResponse.json({ error: 'Unauthorized - ID mismatch' }, { status: 401 });
-    }
-
-    try {
-      // First check if the user exists in Firestore
-      const userRef = doc(db, 'users', userId);
-      const userDoc = await getDoc(userRef);
-
-      if (!userDoc.exists()) {
-        return NextResponse.json({ 
-          error: 'User not found', 
-          details: 'User must be created in Firestore first' 
-        }, { status: 404 });
-      }
-
-      // Save to userProfiles collection
-      const docRef = doc(db, 'userProfiles', userId);
-      const profileData = {
-        ...profile,
-        updatedAt: new Date().toISOString(),
-      };
-      
-      await setDoc(docRef, profileData);
-      
-      return NextResponse.json({ 
-        success: true, 
-        message: 'Profile saved successfully',
-        profile: profileData
-      });
-    } catch (error) {
-      console.error('Error saving to Firestore:', error);
-      return NextResponse.json({ 
-        error: 'Database Error', 
-        details: error instanceof Error ? error.message : 'Unknown database error' 
-      }, { status: 500 });
-    }
-  } catch (error) {
-    console.error('Error in profile API route:', error);
-    return NextResponse.json({ 
-      error: 'Internal Server Error', 
-      details: error instanceof Error ? error.message : 'Unknown error' 
-    }, { status: 500 });
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

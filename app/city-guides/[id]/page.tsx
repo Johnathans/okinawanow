@@ -4,7 +4,8 @@ import { cities } from '@/data/cities';
 import CityGuideLayout from '@/components/CityGuideLayout';
 import PropertyList from '@/components/PropertyList';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMapMarkerAlt, faClock, faYen, faPhone, faGlobe, faUtensils, faShoppingBag, faGraduationCap, faHospital, faBus } from '@fortawesome/free-solid-svg-icons';
+import { faMapMarkerAlt, faClock, faYen, faUtensils, faShoppingBag, faGraduationCap, faHospital, faBus } from '@fortawesome/free-solid-svg-icons';
+import Image from 'next/image';
 
 interface Attraction {
     name: string;
@@ -380,12 +381,14 @@ export default function CityGuidePage({ params }: CityGuidePageProps) {
                                 {cityAttractions.map((attraction, index) => (
                                     <div key={index} className="col-md-6">
                                         <div className="card h-100 border-0 shadow-sm rounded-4">
-                                            <img
-                                                src={attraction.image}
-                                                alt={attraction.name}
-                                                className="card-img-top rounded-top-4"
-                                                style={{ height: '200px', objectFit: 'cover' }}
-                                            />
+                                            <div className="relative w-full h-[300px]">
+                                                <Image
+                                                    src={attraction.image}
+                                                    alt={attraction.name}
+                                                    fill
+                                                    className="object-cover rounded-lg"
+                                                />
+                                            </div>
                                             <div className="card-body p-3">
                                                 <h3 className="h5 mb-3">{attraction.name}</h3>
                                                 <p className="text-muted mb-3" style={{ fontSize: '0.95rem' }}>

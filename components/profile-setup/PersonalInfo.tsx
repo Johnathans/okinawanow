@@ -1,14 +1,24 @@
-import React from 'react';
-import { UserPersonalInfo } from '@/types/profile';
+import React, { useState } from 'react';
+import { FormEvent, ChangeEvent } from 'react';
+import { UserProfile } from '@/types/profile';
+
+interface FormData extends UserProfile {
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
 
 interface PersonalInfoProps {
-  onNext: (data: UserPersonalInfo) => void;
-  onBack: () => void;
-  initialData?: UserPersonalInfo;
+  onNext: (data: FormData) => void;
+  onBack?: () => void;
+  initialData?: Partial<FormData>;
 }
 
 export default function PersonalInfo({ onNext, onBack, initialData }: PersonalInfoProps) {
-  const [formData, setFormData] = React.useState<UserPersonalInfo>({
+  const [formData, setFormData] = React.useState<FormData>({
+    email: initialData?.email || '',
+    password: '',
+    confirmPassword: '',
     firstName: initialData?.firstName || '',
     lastName: initialData?.lastName || '',
     occupation: initialData?.occupation || '',
@@ -16,7 +26,12 @@ export default function PersonalInfo({ onNext, onBack, initialData }: PersonalIn
     petInfo: initialData?.petInfo || { hasPets: false, petTypes: [], petCount: 0 },
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onNext(formData);
   };
@@ -35,12 +50,13 @@ export default function PersonalInfo({ onNext, onBack, initialData }: PersonalIn
                 type="text"
                 className="form-control"
                 value={formData.firstName}
-                onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                onChange={handleChange}
+                name="firstName"
                 required
                 style={{
                   borderColor: '#f4c6ce',
                   '--bs-focus-border-color': '#e75d7c',
-                  '--bs-focus-box-shadow': '0 0 0 0.25rem rgba(231, 93, 124, 0.25)'
+                  '--bs-focus-box-shadow': '0 0 0 0.25rem rgba(231, 93, 124, 0.25)',
                 } as any}
               />
             </div>
@@ -50,12 +66,13 @@ export default function PersonalInfo({ onNext, onBack, initialData }: PersonalIn
                 type="text"
                 className="form-control"
                 value={formData.lastName}
-                onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                onChange={handleChange}
+                name="lastName"
                 required
                 style={{
                   borderColor: '#f4c6ce',
                   '--bs-focus-border-color': '#e75d7c',
-                  '--bs-focus-box-shadow': '0 0 0 0.25rem rgba(231, 93, 124, 0.25)'
+                  '--bs-focus-box-shadow': '0 0 0 0.25rem rgba(231, 93, 124, 0.25)',
                 } as any}
               />
             </div>
@@ -68,12 +85,13 @@ export default function PersonalInfo({ onNext, onBack, initialData }: PersonalIn
               type="text"
               className="form-control"
               value={formData.occupation}
-              onChange={(e) => setFormData({ ...formData, occupation: e.target.value })}
+              onChange={handleChange}
+              name="occupation"
               required
               style={{
                 borderColor: '#f4c6ce',
                 '--bs-focus-border-color': '#e75d7c',
-                '--bs-focus-box-shadow': '0 0 0 0.25rem rgba(231, 93, 124, 0.25)'
+                '--bs-focus-box-shadow': '0 0 0 0.25rem rgba(231, 93, 124, 0.25)',
               } as any}
             />
           </div>
@@ -84,12 +102,13 @@ export default function PersonalInfo({ onNext, onBack, initialData }: PersonalIn
             <select
               className="form-select"
               value={formData.familySize}
-              onChange={(e) => setFormData({ ...formData, familySize: Number(e.target.value) })}
+              onChange={handleChange}
+              name="familySize"
               required
               style={{
                 borderColor: '#f4c6ce',
                 '--bs-focus-border-color': '#e75d7c',
-                '--bs-focus-box-shadow': '0 0 0 0.25rem rgba(231, 93, 124, 0.25)'
+                '--bs-focus-box-shadow': '0 0 0 0.25rem rgba(231, 93, 124, 0.25)',
               } as any}
             >
               {[1, 2, 3, 4, 5, 6, 7, 8].map((size) => (
@@ -107,17 +126,19 @@ export default function PersonalInfo({ onNext, onBack, initialData }: PersonalIn
               <button
                 type="button"
                 className={`btn ${formData.petInfo.hasPets ? 'btn-primary' : 'btn-outline-primary'} flex-grow-1`}
-                onClick={() => setFormData({
-                  ...formData,
-                  petInfo: { ...formData.petInfo, hasPets: true }
-                })}
+                onClick={() =>
+                  setFormData({
+                    ...formData,
+                    petInfo: { ...formData.petInfo, hasPets: true },
+                  })
+                }
                 style={formData.petInfo.hasPets ? {
                   backgroundColor: '#e75d7c',
                   borderColor: '#e75d7c',
-                  color: '#fff'
+                  color: '#fff',
                 } : {
                   borderColor: '#e75d7c',
-                  color: '#e75d7c'
+                  color: '#e75d7c',
                 }}
               >
                 Yes
@@ -125,17 +146,19 @@ export default function PersonalInfo({ onNext, onBack, initialData }: PersonalIn
               <button
                 type="button"
                 className={`btn ${!formData.petInfo.hasPets ? 'btn-primary' : 'btn-outline-primary'} flex-grow-1`}
-                onClick={() => setFormData({
-                  ...formData,
-                  petInfo: { hasPets: false, petTypes: [], petCount: 0 }
-                })}
+                onClick={() =>
+                  setFormData({
+                    ...formData,
+                    petInfo: { hasPets: false, petTypes: [], petCount: 0 },
+                  })
+                }
                 style={!formData.petInfo.hasPets ? {
                   backgroundColor: '#e75d7c',
                   borderColor: '#e75d7c',
-                  color: '#fff'
+                  color: '#fff',
                 } : {
                   borderColor: '#e75d7c',
-                  color: '#e75d7c'
+                  color: '#e75d7c',
                 }}
               >
                 No
@@ -162,16 +185,16 @@ export default function PersonalInfo({ onNext, onBack, initialData }: PersonalIn
                             : [...formData.petInfo.petTypes, type];
                           setFormData({
                             ...formData,
-                            petInfo: { ...formData.petInfo, petTypes: newTypes }
+                            petInfo: { ...formData.petInfo, petTypes: newTypes },
                           });
                         }}
                         style={formData.petInfo.petTypes.includes(type) ? {
                           backgroundColor: '#e75d7c',
                           borderColor: '#e75d7c',
-                          color: '#fff'
+                          color: '#fff',
                         } : {
                           borderColor: '#e75d7c',
-                          color: '#e75d7c'
+                          color: '#e75d7c',
                         }}
                       >
                         {type}
@@ -185,16 +208,12 @@ export default function PersonalInfo({ onNext, onBack, initialData }: PersonalIn
                   <select
                     className="form-select"
                     value={formData.petInfo.petCount}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        petInfo: { ...formData.petInfo, petCount: Number(e.target.value) }
-                      })
-                    }
+                    onChange={handleChange}
+                    name="petInfo.petCount"
                     style={{
                       borderColor: '#f4c6ce',
                       '--bs-focus-border-color': '#e75d7c',
-                      '--bs-focus-box-shadow': '0 0 0 0.25rem rgba(231, 93, 124, 0.25)'
+                      '--bs-focus-box-shadow': '0 0 0 0.25rem rgba(231, 93, 124, 0.25)',
                     } as any}
                   >
                     {[1, 2, 3, 4, 5].map((num) => (
@@ -215,7 +234,7 @@ export default function PersonalInfo({ onNext, onBack, initialData }: PersonalIn
               className="btn btn-outline-primary px-4 py-2"
               style={{
                 borderColor: '#e75d7c',
-                color: '#e75d7c'
+                color: '#e75d7c',
               }}
             >
               Back
@@ -227,7 +246,7 @@ export default function PersonalInfo({ onNext, onBack, initialData }: PersonalIn
                 backgroundColor: '#e75d7c',
                 borderColor: '#e75d7c',
                 '--bs-btn-hover-bg': '#d64d6c',
-                '--bs-btn-hover-border-color': '#d64d6c'
+                '--bs-btn-hover-border-color': '#d64d6c',
               } as any}
             >
               Next Step

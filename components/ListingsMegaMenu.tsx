@@ -1,18 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { cities } from "@/data/cities";
 import { bases } from "@/data/bases";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { 
-    faMapMarkerAlt, 
-    faBuilding, 
-    faSearch,
-    faFilter,
-    faHome,
-    faShieldAlt
-} from "@fortawesome/free-solid-svg-icons";
 
 interface Props {
     isOpen: boolean;
@@ -62,13 +52,6 @@ export default function ListingsMegaMenu({ isOpen, onClose }: Props) {
                                         color: '#2d3436'
                                     }}
                                 >
-                                    <FontAwesomeIcon 
-                                        icon={faHome} 
-                                        style={{ 
-                                            color: 'var(--primary-pink)',
-                                            fontSize: '1.5rem'
-                                        }} 
-                                    />
                                     <div>
                                         <div className="fw-medium mb-1">All Listings</div>
                                         <div style={{ fontSize: '0.875rem', color: '#636e72' }}>
@@ -100,7 +83,6 @@ export default function ListingsMegaMenu({ isOpen, onClose }: Props) {
                                                 e.currentTarget.style.backgroundColor = 'transparent';
                                             }}
                                         >
-                                            <FontAwesomeIcon icon={faMapMarkerAlt} style={{ color: 'var(--primary-pink)' }} />
                                             <span className="fw-medium">{city.name}</span>
                                         </div>
                                     </Link>
@@ -129,7 +111,6 @@ export default function ListingsMegaMenu({ isOpen, onClose }: Props) {
                                                 e.currentTarget.style.backgroundColor = 'transparent';
                                             }}
                                         >
-                                            <FontAwesomeIcon icon={faShieldAlt} style={{ color: 'var(--primary-pink)' }} />
                                             <span className="fw-medium">{base.name}</span>
                                         </div>
                                     </Link>

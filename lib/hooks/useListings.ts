@@ -1,99 +1,74 @@
 import { useState, useEffect } from 'react';
-import mockListings from '@/app/listings/mockListings';
+import { collection, query, getDocs, where, orderBy } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { Property } from '@/types/property';
 
-interface Listing {
-  id: string;
-  title: string;
-  location: string;
-  price: number;
-  beds: number | null;
-  baths: number | null;
-  sqm: number | null;
-  images: string[];
-  propertyType: string;
-  description: string;
-  url: string;
-  source: string;
-  createdAt: any;
-  updatedAt: any;
-  status: string;
-  views: number;
-  favorites: number;
-  nearestBase?: string;
-}
-
-interface UseListingsProps {
-  search?: string;
+interface ListingsFilter {
   location?: string;
   propertyType?: string;
-  priceRange?: string;
-  bedrooms?: string;
-  nearestBase?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  bedrooms?: number;
+  bathrooms?: number;
 }
 
-export function useListings({
-  search,
-  location,
-  propertyType,
-  priceRange,
-  bedrooms,
-  nearestBase,
-}: UseListingsProps) {
-  const [listings, setListings] = useState(mockListings);
-  const [loading, setLoading] = useState(false);
+interface UseListingsResult {
+  listings: Property[];
+  loading: boolean;
+  error: Error | null;
+  refetch: () => Promise<void>;
+}
+
+export function useListings(filters?: ListingsFilter): UseListingsResult {
+  const [listings, setListings] = useState<Property[]>([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
+  const fetchListings = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      let q = query(collection(db, 'listings'), orderBy('createdAt', 'desc'));
+
+      if (filters) {
+        if (filters.location) {
+          q = query(q, where('location', '==', filters.location));
+        }
+        if (filters.propertyType) {
+          q = query(q, where('propertyType', '==', filters.propertyType));
+        }
+        if (filters.minPrice) {
+          q = query(q, where('price', '>=', filters.minPrice));
+        }
+        if (filters.maxPrice) {
+          q = query(q, where('price', '<=', filters.maxPrice));
+        }
+        if (filters.bedrooms) {
+          q = query(q, where('bedrooms', '>=', filters.bedrooms));
+        }
+        if (filters.bathrooms) {
+          q = query(q, where('bathrooms', '>=', filters.bathrooms));
+        }
+      }
+
+      const snapshot = await getDocs(q);
+      const listingsData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as Property[];
+
+      setListings(listingsData);
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error('Failed to fetch listings'));
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    let filteredListings = [...mockListings];
+    fetchListings();
+  }, [filters?.location, filters?.propertyType, filters?.minPrice, filters?.maxPrice, filters?.bedrooms, filters?.bathrooms]);
 
-    // Apply filters
-    if (search) {
-      const searchLower = search.toLowerCase();
-      filteredListings = filteredListings.filter(listing =>
-        listing.title.toLowerCase().includes(searchLower) ||
-        listing.description?.toLowerCase().includes(searchLower) ||
-        listing.location.toLowerCase().includes(searchLower)
-      );
-    }
-
-    if (location) {
-      filteredListings = filteredListings.filter(listing =>
-        listing.location.toLowerCase() === location.toLowerCase()
-      );
-    }
-
-    if (propertyType) {
-      filteredListings = filteredListings.filter(listing =>
-        listing.propertyType.toLowerCase() === propertyType.toLowerCase()
-      );
-    }
-
-    if (nearestBase) {
-      filteredListings = filteredListings.filter(listing =>
-        listing.nearestBase?.toLowerCase() === nearestBase.toLowerCase()
-      );
-    }
-
-    if (priceRange) {
-      const [min, max] = priceRange.split('-').map(Number);
-      if (!isNaN(min) && !isNaN(max)) {
-        filteredListings = filteredListings.filter(listing =>
-          listing.price >= min && listing.price <= max
-        );
-      }
-    }
-
-    if (bedrooms) {
-      const minBeds = parseInt(bedrooms);
-      if (!isNaN(minBeds)) {
-        filteredListings = filteredListings.filter(listing =>
-          listing.beds >= minBeds
-        );
-      }
-    }
-
-    setListings(filteredListings);
-  }, [search, location, propertyType, priceRange, bedrooms, nearestBase]);
-
-  return { listings, loading, error };
+  return { listings, loading, error, refetch: fetchListings };
 }

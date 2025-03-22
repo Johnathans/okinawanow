@@ -1,6 +1,4 @@
 import Link from "next/link";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { cities } from "@/data/cities";
 import CityCard from "@/components/CityCard";
 import CityGuideCard from "@/components/CityGuideCard";

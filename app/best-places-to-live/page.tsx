@@ -9,8 +9,6 @@ import {
   faWater,
   faTree
 } from "@fortawesome/free-solid-svg-icons";
-import Link from "next/link";
-import Image from "next/image";
 
 export default function BestPlacesPage() {
   const areas = [

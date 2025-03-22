@@ -1,17 +1,21 @@
 "use client";
 
 import {
-    faHome,
     faGraduationCap,
     faShoppingBag,
     faUtensils,
-    faLandmark
+    faLandmark,
+    faMapMarkerAlt, 
+    faClock, 
+    faYen, 
+    faPhone, 
+    faGlobe, 
+    faBus
 } from "@fortawesome/free-solid-svg-icons";
 import { cities } from '@/data/cities';
 import CityGuideLayout from '@/components/CityGuideLayout';
 import PropertyList from '@/components/PropertyList';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMapMarkerAlt, faClock, faYen, faPhone, faGlobe, faBus } from '@fortawesome/free-solid-svg-icons';
 
 const attractions = [
     {

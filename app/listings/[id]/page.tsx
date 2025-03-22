@@ -1,51 +1,12 @@
-'use client';
-
-import Image from 'next/image';
-import Link from 'next/link';
-import { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faHeart as faHeartSolid,
-  faCalendarPlus,
-  faMapMarkerAlt,
-  faChevronLeft,
-  faCheckCircle,
-  faPhone,
-  faEnvelope,
-  faShare,
-  faCar,
-  faDog,
-  faSnowflake,
-  faKey,
-  faBuilding,
-  faShield,
-  faUtensils,
-  faWifi,
-  faLock,
-  faParking,
-  faBed,
-  faBath,
-  faRuler,
-  faCalendar,
-  faMoneyBill,
-  faMapMarkerAlt
-} from '@fortawesome/free-solid-svg-icons';
-import { faHeart as faHeartRegular } from '@fortawesome/free-regular-svg-icons';
 import { Property, PropertyType, PetPolicy } from '@/types/property';
-import LoginPromptModal from '@/components/LoginPromptModal';
-import PropertyMap from '@/components/PropertyMap';
+import Image from 'next/image';
 
-interface ListingPageProps {
+export default async function ListingPage({
+  params,
+}: {
   params: { id: string };
-  isLoggedIn?: boolean;
-}
-
-export default function ListingPage({ params, isLoggedIn }: ListingPageProps) {
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  const [loginModalType, setLoginModalType] = useState<'favorite' | 'tour'>('favorite');
-  const [isFavorite, setIsFavorite] = useState(false);
-
-  // TODO: Fetch actual listing data
+}) {
+  // TODO: Fetch actual listing data from your database
   const listing: Property = {
     id: params.id,
     propertyId: params.id,
@@ -98,31 +59,8 @@ export default function ListingPage({ params, isLoggedIn }: ListingPageProps) {
     createdBy: "agency1"
   };
 
-  const handleFavoriteClick = () => {
-    if (!isLoggedIn) {
-      setLoginModalType('favorite');
-      setShowLoginModal(true);
-      return;
-    }
-    setIsFavorite(!isFavorite);
-  };
-
-  const handleTourRequest = () => {
-    if (!isLoggedIn) {
-      setLoginModalType('tour');
-      setShowLoginModal(true);
-      return;
-    }
-    // Handle tour request
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
+  // TODO: Check if user is logged in
+  const isLoggedIn = false;
 
   return (
     <main className="bg-white">
@@ -131,14 +69,14 @@ export default function ListingPage({ params, isLoggedIn }: ListingPageProps) {
         <div className="container">
           <div className="py-4">
             {/* Navigation */}
-            <Link 
+            <a 
               href="/listings" 
               className="text-decoration-none d-inline-flex align-items-center gap-2 mb-3"
               style={{ color: 'var(--primary-pink)', fontSize: '0.9rem' }}
             >
-              <FontAwesomeIcon icon={faChevronLeft} />
+              <i className="fa-solid fa-chevron-left"></i>
               Back to Listings
-            </Link>
+            </a>
 
             {/* Title and Location */}
             <div className="row align-items-start mb-4">
@@ -146,7 +84,7 @@ export default function ListingPage({ params, isLoggedIn }: ListingPageProps) {
                 <h1 className="h3 mb-2">{listing.title}</h1>
                 <div className="d-flex flex-wrap align-items-center gap-3">
                   <div className="d-flex align-items-center gap-2">
-                    <FontAwesomeIcon icon={faMapMarkerAlt} className="text-pink" />
+                    <i className="fa-solid fa-map-marker-alt text-pink"></i>
                     <span>{listing.location}</span>
                   </div>
                   {listing.baseInspected && (
@@ -156,7 +94,7 @@ export default function ListingPage({ params, isLoggedIn }: ListingPageProps) {
                       padding: '6px 12px',
                       fontSize: '0.9rem'
                     }}>
-                      <FontAwesomeIcon icon={faShield} className="me-1" />
+                      <i className="fa-solid fa-shield me-1"></i>
                       Base Inspected
                     </div>
                   )}
@@ -178,7 +116,6 @@ export default function ListingPage({ params, isLoggedIn }: ListingPageProps) {
             {/* Action Buttons */}
             <div className="d-flex gap-2">
               <button 
-                onClick={handleTourRequest}
                 className="btn btn-primary d-flex align-items-center gap-2"
                 style={{
                   backgroundColor: 'var(--primary-pink)',
@@ -186,21 +123,20 @@ export default function ListingPage({ params, isLoggedIn }: ListingPageProps) {
                   padding: '10px 20px'
                 }}
               >
-                <FontAwesomeIcon icon={faCalendarPlus} />
+                <i className="fa-solid fa-calendar-plus"></i>
                 Request Tour
               </button>
               <button 
-                onClick={handleFavoriteClick}
                 className="btn d-flex align-items-center justify-content-center"
                 style={{
                   width: '42px',
                   height: '42px',
                   border: '1px solid var(--medium-pink)',
-                  color: isFavorite ? 'var(--primary-pink)' : 'var(--medium-pink)',
+                  color: 'var(--medium-pink)',
                   backgroundColor: 'white'
                 }}
               >
-                <FontAwesomeIcon icon={isFavorite ? faHeartSolid : faHeartRegular} />
+                <i className="fa-regular fa-heart"></i>
               </button>
             </div>
 
@@ -208,18 +144,12 @@ export default function ListingPage({ params, isLoggedIn }: ListingPageProps) {
             <div className="row g-3">
               {/* Main Image */}
               <div className="col-lg-7">
-                <div 
-                  className="position-relative rounded-4 overflow-hidden" 
-                  style={{ 
-                    height: '480px',
-                    backgroundColor: 'var(--light-pink)'
-                  }}
-                >
+                <div className="relative w-full h-[400px] mb-4">
                   <Image
                     src={listing.images[0]}
                     alt={listing.title}
                     fill
-                    style={{ objectFit: 'cover' }}
+                    className="object-cover rounded-lg"
                     priority
                   />
                 </div>
@@ -229,18 +159,12 @@ export default function ListingPage({ params, isLoggedIn }: ListingPageProps) {
                 <div className="row g-3">
                   {listing.images.slice(1, 5).map((image, index) => (
                     <div key={index} className="col-6">
-                      <div 
-                        className="position-relative rounded-4 overflow-hidden" 
-                        style={{ 
-                          height: '230px',
-                          backgroundColor: 'var(--light-pink)'
-                        }}
-                      >
+                      <div className="relative w-full h-[200px]">
                         <Image
                           src={image}
-                          alt={`${listing.title} - Image ${index + 2}`}
+                          alt={`${listing.title} image ${index + 1}`}
                           fill
-                          style={{ objectFit: 'cover' }}
+                          className="object-cover rounded-lg"
                         />
                       </div>
                     </div>
@@ -263,7 +187,7 @@ export default function ListingPage({ params, isLoggedIn }: ListingPageProps) {
                 <div className="row g-4">
                   <div className="col-6 col-md-3">
                     <div className="d-flex flex-column gap-2">
-                      <FontAwesomeIcon icon={faMoneyBill} className="text-pink" size="lg" />
+                      <i className="fa-solid fa-money-bill text-pink" size="lg"></i>
                       <div className="small text-muted">Monthly Rent</div>
                       <div>
                         <div className="fw-bold">¥{listing.price.toLocaleString()}</div>
@@ -273,21 +197,21 @@ export default function ListingPage({ params, isLoggedIn }: ListingPageProps) {
                   </div>
                   <div className="col-6 col-md-3">
                     <div className="d-flex flex-column gap-2">
-                      <FontAwesomeIcon icon={faBed} className="text-pink" size="lg" />
+                      <i className="fa-solid fa-bed text-pink" size="lg"></i>
                       <div className="small text-muted">Bedrooms</div>
                       <div className="fw-bold">{listing.bedrooms}</div>
                     </div>
                   </div>
                   <div className="col-6 col-md-3">
                     <div className="d-flex flex-column gap-2">
-                      <FontAwesomeIcon icon={faBath} className="text-pink" size="lg" />
+                      <i className="fa-solid fa-bath text-pink" size="lg"></i>
                       <div className="small text-muted">Bathrooms</div>
                       <div className="fw-bold">{listing.bathrooms}</div>
                     </div>
                   </div>
                   <div className="col-6 col-md-3">
                     <div className="d-flex flex-column gap-2">
-                      <FontAwesomeIcon icon={faRuler} className="text-pink" size="lg" />
+                      <i className="fa-solid fa-ruler text-pink" size="lg"></i>
                       <div className="small text-muted">Floor Area</div>
                       <div className="fw-bold">{listing.floorArea}m²</div>
                     </div>
@@ -314,7 +238,7 @@ export default function ListingPage({ params, isLoggedIn }: ListingPageProps) {
                         {listing.interiorAmenities.map(amenity => (
                           <li key={amenity} className="d-flex align-items-center gap-2 mb-2">
                             <div className="rounded-circle p-1" style={{ backgroundColor: 'var(--light-pink)' }}>
-                              <FontAwesomeIcon icon={faCheckCircle} style={{ color: 'var(--primary-pink)' }} size="sm" />
+                              <i className="fa-solid fa-check-circle text-pink" size="sm"></i>
                             </div>
                             <span>{amenity}</span>
                           </li>
@@ -330,7 +254,7 @@ export default function ListingPage({ params, isLoggedIn }: ListingPageProps) {
                         {listing.kitchenAmenities.map(amenity => (
                           <li key={amenity} className="d-flex align-items-center gap-2 mb-2">
                             <div className="rounded-circle p-1" style={{ backgroundColor: 'var(--light-pink)' }}>
-                              <FontAwesomeIcon icon={faCheckCircle} style={{ color: 'var(--primary-pink)' }} size="sm" />
+                              <i className="fa-solid fa-check-circle text-pink" size="sm"></i>
                             </div>
                             <span>{amenity}</span>
                           </li>
@@ -346,21 +270,25 @@ export default function ListingPage({ params, isLoggedIn }: ListingPageProps) {
                 <h3 className="h5 mb-4">Location</h3>
                 <div className="mb-4">
                   <div className="d-flex align-items-center gap-2 mb-2">
-                    <FontAwesomeIcon icon={faMapMarkerAlt} className="text-pink" />
+                    <i className="fa-solid fa-map-marker-alt text-pink"></i>
                     <span className="fw-medium">{listing.location}</span>
                   </div>
                   {listing.nearestBase && (
                     <div className="d-flex align-items-center gap-2 text-muted">
-                      <FontAwesomeIcon icon={faShield} />
+                      <i className="fa-solid fa-shield"></i>
                       <span>Near {listing.nearestBase}</span>
                     </div>
                   )}
                 </div>
-                <PropertyMap 
-                  location={listing.city}
+                <div 
                   className="rounded-4 border"
-                  style={{ height: '300px' }}
-                />
+                  style={{ 
+                    height: '300px',
+                    width: '100%'
+                  }}
+                >
+                  Map
+                </div>
               </div>
             </div>
 
@@ -410,28 +338,32 @@ export default function ListingPage({ params, isLoggedIn }: ListingPageProps) {
                     <h3 className="h5 mb-4">Quick Facts</h3>
                     <ul className="list-unstyled mb-0">
                       <li className="d-flex align-items-center gap-3 mb-3">
-                        <FontAwesomeIcon icon={faHome} className="text-pink" />
+                        <i className="fa-solid fa-home text-pink"></i>
                         <div>
                           <div className="small text-muted">Property Type</div>
                           <div className="fw-medium">{listing.propertyType}</div>
                         </div>
                       </li>
                       <li className="d-flex align-items-center gap-3 mb-3">
-                        <FontAwesomeIcon icon={faCalendar} className="text-pink" />
+                        <i className="fa-solid fa-calendar text-pink"></i>
                         <div>
                           <div className="small text-muted">Available From</div>
-                          <div className="fw-medium">{formatDate(listing.availableFrom)}</div>
+                          <div className="fw-medium">{new Date(listing.availableFrom).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                          })}</div>
                         </div>
                       </li>
                       <li className="d-flex align-items-center gap-3 mb-3">
-                        <FontAwesomeIcon icon={faHandshake} className="text-pink" />
+                        <i className="fa-solid fa-handshake text-pink"></i>
                         <div>
                           <div className="small text-muted">Lease Term</div>
                           <div className="fw-medium">{listing.leaseTerm}</div>
                         </div>
                       </li>
                       <li className="d-flex align-items-center gap-3">
-                        <FontAwesomeIcon icon={faWifi} className="text-pink" />
+                        <i className="fa-solid fa-wifi text-pink"></i>
                         <div>
                           <div className="small text-muted">Utilities</div>
                           <div className="fw-medium">
@@ -457,18 +389,6 @@ export default function ListingPage({ params, isLoggedIn }: ListingPageProps) {
           </div>
         </div>
       </div>
-
-      {/* Login Modal */}
-      <LoginPromptModal
-        isOpen={showLoginModal}
-        onClose={() => setShowLoginModal(false)}
-        message={
-          loginModalType === 'favorite'
-            ? 'Log in to save this property to your favorites and get updates about similar properties.'
-            : 'Log in to request a tour of this property and get in touch with our agents.'
-        }
-        actionType={loginModalType}
-      />
     </main>
   );
 }

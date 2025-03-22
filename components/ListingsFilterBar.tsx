@@ -1,16 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
     faLocationDot, 
+    faMapMarkerAlt, 
     faBuilding, 
     faCoins, 
     faBed, 
     faFilter, 
     faXmark, 
-    faMapMarkerAlt,
     faSearch 
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -36,7 +36,6 @@ const ListingsFilterBar = ({ initialFilters = {} }: ListingsFilterBarProps) => {
     const [bedrooms, setBedrooms] = useState(initialFilters.bedrooms || searchParams?.get('bedrooms') || '');
     const [priceRange, setPriceRange] = useState(initialFilters.priceRange || searchParams?.get('priceRange') || '');
     const [search, setSearch] = useState(initialFilters.search || searchParams?.get('search') || '');
-    const [showMoreFilters, setShowMoreFilters] = useState(false);
     
     useEffect(() => {
         const params = new URLSearchParams(searchParams?.toString());
@@ -54,7 +53,7 @@ const ListingsFilterBar = ({ initialFilters = {} }: ListingsFilterBarProps) => {
         else params.delete('search');
         
         router.push(`/listings?${params.toString()}`);
-    }, [location, nearestBase, propertyType, priceRange, bedrooms, search]);
+    }, [location, nearestBase, propertyType, priceRange, bedrooms, search, router, searchParams]);
 
     const clearFilter = (setter: (value: string) => void) => {
         setter('');

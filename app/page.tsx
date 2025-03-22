@@ -1,21 +1,13 @@
-import styles from './home.module.css';
-import Link from 'next/link';
-import Image from 'next/image';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-    faHome,
-    faMapMarkerAlt,
-    faBuilding,
-    faSearch,
-    faHandshake,
-    faPlane,
-    faShieldAlt,
-    faComments
+  faMapMarkerAlt,
+  faHome,
+  faYen,
+  faLanguage
 } from "@fortawesome/free-solid-svg-icons";
-import FilterBar from '../components/FilterBar';
-import HeroAnimation from '../components/HeroAnimation';
-import HeroIllustration from '../components/HeroIllustration';
-import SearchBar from '../components/SearchBar';
+import PropertyList from "@/components/PropertyList";
+import { properties } from "@/data/properties";
+import Image from 'next/image';
 
 export default function Home() {
   const featuredListings = [
@@ -181,12 +173,9 @@ export default function Home() {
             </div>
 
             {/* Search Bar */}
-            <SearchBar />
-
             <div className="mt-5">
               {/* Illustration Banner */}
               <div className="position-absolute bottom-0 start-50 translate-middle-x" style={{ width: '100%', maxWidth: '1200px' }}>
-                <HeroIllustration />
               </div>
             </div>
           </div>
@@ -283,7 +272,7 @@ export default function Home() {
             ))}
           </div>
           <div className="text-center mt-5">
-            <Link 
+            <a 
               href="/listings"
               className="btn btn-primary btn-lg"
               style={{
@@ -293,7 +282,7 @@ export default function Home() {
               }}
             >
               Browse All Properties
-            </Link>
+            </a>
           </div>
         </div>
       </section>
@@ -308,7 +297,7 @@ export default function Home() {
           <div className="row g-4">
             {neighborhoods.map((neighborhood, index) => (
               <div key={index} className="col-md-4">
-                <Link 
+                <a 
                   href={`/neighborhoods/${neighborhood.name.toLowerCase()}`}
                   className="text-decoration-none"
                 >
@@ -324,7 +313,8 @@ export default function Home() {
                       <Image
                         src={neighborhood.image}
                         alt={neighborhood.name}
-                        fill
+                        width={400}
+                        height={240}
                         style={{ 
                           objectFit: "cover",
                           borderRadius: '1rem 1rem 0 0'
@@ -352,12 +342,12 @@ export default function Home() {
                       </p>
                     </div>
                   </div>
-                </Link>
+                </a>
               </div>
             ))}
           </div>
           <div className="text-center mt-5">
-            <Link 
+            <a 
               href="/city-guides"
               className="btn btn-primary btn-lg"
               style={{
@@ -367,7 +357,7 @@ export default function Home() {
               }}
             >
               View All City Guides
-            </Link>
+            </a>
           </div>
         </div>
       </section>

@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { auth, db } from "@/lib/firebase";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, User } from "firebase/auth";
 import { 
     collection, 
     query, 
@@ -74,7 +74,7 @@ interface Activity {
 
 export default function AgencyDashboardPage() {
     const router = useRouter();
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
     const [properties, setProperties] = useState<Property[]>([]);
     const [tourRequests, setTourRequests] = useState<TourRequest[]>([]);

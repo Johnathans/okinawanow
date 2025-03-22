@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { Loader } from '@googlemaps/js-api-loader';
+import { googleMapsConfig } from '@/config/googleMaps';
 
 interface MapProps {
   markers: Array<{
@@ -11,27 +12,26 @@ interface MapProps {
     price: number;
   }>;
   hoveredListing?: string | null;
-  center: {
-    lat: number;
-    lng: number;
-  };
+  center: google.maps.LatLngLiteral;
+  zoom?: number;
   style?: React.CSSProperties;
 }
 
-const Map = ({ markers, hoveredListing, center, style }: MapProps) => {
+const Map = ({ markers, hoveredListing, center, zoom = 12, style }: MapProps) => {
   const mapRef = useRef<HTMLDivElement>(null);
-  const markersRef = useRef<{ [key: string]: google.maps.Marker }>({});
-  const mapInstanceRef = useRef<google.maps.Map | null>(null);
+  const [map, setMap] = useState<google.maps.Map | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [mapMarkers, setMapMarkers] = useState<google.maps.Marker[]>([]);
 
+  // Initialize map
   useEffect(() => {
     if (!mapRef.current) return;
 
     const initMap = async () => {
       try {
         if (!process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY) {
-          setError('Google Maps API key is missing');
+          console.error('Google Maps API key is missing');
+          setIsLoading(false);
           return;
         }
 
@@ -44,96 +44,72 @@ const Map = ({ markers, hoveredListing, center, style }: MapProps) => {
 
         if (!mapRef.current) return;
 
-        const map = new google.maps.Map(mapRef.current, {
+        const newMap = new google.maps.Map(mapRef.current, {
           center,
-          zoom: 12,
+          zoom,
           mapTypeControl: false,
           streetViewControl: false,
           fullscreenControl: false,
-          styles: [
-            {
-              featureType: "all",
-              elementType: "labels.text.fill",
-              stylers: [{ color: "#333333" }]
-            }
-          ]
+          styles: googleMapsConfig.styles
         });
-
-        mapInstanceRef.current = map;
+        setMap(newMap);
         setIsLoading(false);
-      } catch (err) {
-        console.error('Error initializing map:', err);
-        setError('Failed to load map');
+      } catch (error) {
+        console.error('Error loading map:', error);
         setIsLoading(false);
       }
     };
 
     initMap();
+  }, [center, zoom]);
 
-    return () => {
-      Object.values(markersRef.current).forEach(marker => marker.setMap(null));
-      markersRef.current = {};
-    };
-  }, [center]);
+  // Handle markers
+  const initializeMarkers = useCallback(() => {
+    if (!map || !markers.length) return;
 
-  useEffect(() => {
-    if (!mapInstanceRef.current || isLoading) return;
+    // Clear existing markers
+    mapMarkers.forEach(marker => marker.setMap(null));
 
-    // Remove old markers
-    Object.entries(markersRef.current).forEach(([id, marker]) => {
-      if (!markers.find(m => m.id === id)) {
-        marker.setMap(null);
-        delete markersRef.current[id];
-      }
-    });
-
-    // Add or update markers
-    markers.forEach(marker => {
-      if (!marker.lat || !marker.lng) return;
-
+    // Create new markers
+    const newMarkers = markers.map(marker => {
       const isHovered = marker.id === hoveredListing;
       const position = { lat: marker.lat, lng: marker.lng };
       
-      if (markersRef.current[marker.id]) {
-        const existingMarker = markersRef.current[marker.id];
-        existingMarker.setPosition(position);
-        existingMarker.setLabel({
+      return new google.maps.Marker({
+        position,
+        map,
+        label: {
           text: `¥${marker.price.toLocaleString()}`,
           color: isHovered ? '#ffffff' : '#e75d7c',
           fontSize: '14px',
           fontWeight: '600'
-        });
-        existingMarker.setIcon({
+        },
+        icon: {
           path: 'M 0,0 C -2,-20 -10,-22 -10,-30 A 10,10 0 1,1 10,-30 C 10,-22 2,-20 0,0 z',
           fillColor: isHovered ? '#e75d7c' : '#ffffff',
           fillOpacity: 1,
           strokeColor: '#e75d7c',
           strokeWeight: 2,
           labelOrigin: new google.maps.Point(0, -25)
-        });
-      } else {
-        const newMarker = new google.maps.Marker({
-          position,
-          map: mapInstanceRef.current,
-          label: {
-            text: `¥${marker.price.toLocaleString()}`,
-            color: isHovered ? '#ffffff' : '#e75d7c',
-            fontSize: '14px',
-            fontWeight: '600'
-          },
-          icon: {
-            path: 'M 0,0 C -2,-20 -10,-22 -10,-30 A 10,10 0 1,1 10,-30 C 10,-22 2,-20 0,0 z',
-            fillColor: isHovered ? '#e75d7c' : '#ffffff',
-            fillOpacity: 1,
-            strokeColor: '#e75d7c',
-            strokeWeight: 2,
-            labelOrigin: new google.maps.Point(0, -25)
-          }
-        });
-        markersRef.current[marker.id] = newMarker;
-      }
+        }
+      });
     });
-  }, [markers, hoveredListing]);
+
+    setMapMarkers(newMarkers);
+  }, [map, markers, hoveredListing, mapMarkers]);
+
+  useEffect(() => {
+    if (!isLoading && map) {
+      initializeMarkers();
+    }
+  }, [isLoading, map, initializeMarkers]);
+
+  // Cleanup markers on unmount
+  useEffect(() => {
+    return () => {
+      mapMarkers.forEach(marker => marker.setMap(null));
+    };
+  }, [mapMarkers]);
 
   return (
     <div 
@@ -167,21 +143,6 @@ const Map = ({ markers, hoveredListing, center, style }: MapProps) => {
         >
           <div className="spinner-border" role="status" style={{ color: 'var(--primary-pink)' }}>
             <span className="visually-hidden">Loading map...</span>
-          </div>
-        </div>
-      )}
-      {error && (
-        <div 
-          style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            textAlign: 'center'
-          }}
-        >
-          <div className="text-muted">
-            <p>{error}</p>
           </div>
         </div>
       )}

@@ -11,16 +11,8 @@ import {
     faGlobe,
     faBuilding,
     faArrowLeft,
-    faCheck,
     faHome,
-    faBed,
-    faBath,
-    faYen,
-    faFilter,
-    faLanguage,
-    faClock,
-    faHandshake,
-    faShield
+    faCheck
 } from "@fortawesome/free-solid-svg-icons";
 import { agencies } from "@/data/agencies";
 import { properties } from "@/data/properties";
@@ -48,7 +40,7 @@ export default function AgencyProfilePage() {
             case "bedrooms":
                 return b.bedrooms - a.bedrooms;
             default:
-                return new Date(b.listedDate).getTime() - new Date(a.listedDate).getTime();
+                return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
         }
     });
 

@@ -1,19 +1,11 @@
-"use client";
-
-import {
-    faHome,
-    faTree,
-    faShoppingBag,
-    faUtensils,
-    faUmbrellaBeach
-} from "@fortawesome/free-solid-svg-icons";
-import CityGuideTemplate from "@/components/templates/CityGuideTemplate";
-import { cities } from '@/data/cities';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMapMarkerAlt, faPhone, faGlobe } from "@fortawesome/free-solid-svg-icons";
+import { cities } from "@/data/cities";
+import { bases } from "@/data/bases";
+import Image from "next/image";
+import CityGuideTemplate from '@/components/templates/CityGuideTemplate';
 import CityGuideLayout from '@/components/CityGuideLayout';
 import PropertyList from '@/components/PropertyList';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMapMarkerAlt, faClock, faYen, faPhone, faGlobe } from '@fortawesome/free-solid-svg-icons';
-import { generateMetadata } from './metadata';
 
 const attractions = [
     {
@@ -59,14 +51,14 @@ const attractions = [
 ];
 
 const quickFacts = [
-    { icon: "🏘️", text: "85 Available Properties" },
-    { icon: "🚗", text: "25min to Naha Airport" },
-    { icon: "🏥", text: "2 Major Hospitals" },
-    { icon: "🏫", text: "4 International Schools" },
-    { icon: "🌊", text: "3 Public Beaches" },
-    { icon: "🏪", text: "5 Shopping Centers" },
-    { icon: "🚌", text: "Regular Bus Service" },
-    { icon: "🍽️", text: "100+ Restaurants" }
+    { icon: "", text: "85 Available Properties" },
+    { icon: "", text: "25min to Naha Airport" },
+    { icon: "", text: "2 Major Hospitals" },
+    { icon: "", text: "4 International Schools" },
+    { icon: "", text: "3 Public Beaches" },
+    { icon: "", text: "5 Shopping Centers" },
+    { icon: "", text: "Regular Bus Service" },
+    { icon: "", text: "100+ Restaurants" }
 ];
 
 const highlights = [
@@ -133,7 +125,11 @@ const agencies = [
 ];
 
 export default function ChatanGuidePage() {
-    const city = cities.find(c => c.id === 'chatan')!;
+    const city = cities.find(c => c.id === 'chatan');
+  
+    if (!city) {
+      return <div>City not found</div>;
+    }
 
     return (
         <CityGuideLayout city={city}>
@@ -156,7 +152,7 @@ export default function ChatanGuidePage() {
                                         <ul className="list-unstyled mb-0">
                                             {highlights.map((highlight, index) => (
                                                 <li key={index} className="mb-2">
-                                                    ✓ {highlight}
+                                                    {highlight}
                                                 </li>
                                             ))}
                                         </ul>
@@ -227,12 +223,12 @@ export default function ChatanGuidePage() {
                                                         {attraction.location}
                                                     </div>
                                                     <div>
-                                                        <FontAwesomeIcon icon={faClock} className="me-2" />
-                                                        {attraction.hours}
+                                                        <FontAwesomeIcon icon={faPhone} className="me-2" />
+                                                        {attraction.phone}
                                                     </div>
                                                     <div>
-                                                        <FontAwesomeIcon icon={faYen} className="me-2" />
-                                                        {attraction.price}
+                                                        <FontAwesomeIcon icon={faGlobe} className="me-2" />
+                                                        {attraction.website}
                                                     </div>
                                                 </div>
                                             </div>

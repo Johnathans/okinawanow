@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { Property } from '@/types/property';
 import ListingCard from '@/components/ListingCard';
 import FilterBar from '@/components/FilterBar';
@@ -19,10 +19,8 @@ const Map = dynamic(() => import('@/components/Map'), { ssr: false });
 
 export default function ListingsClient() {
   const [listings, setListings] = useState<Property[]>([]);
-  const [loading, setLoading] = useState(true);
   const [showMap, setShowMap] = useState(true);
   const [hoveredListing, setHoveredListing] = useState<string | null>(null);
-  const router = useRouter();
   const searchParams = useSearchParams();
   const { favorites, toggleFavorite } = useFavorites();
   const { user } = useAuth();
@@ -104,8 +102,6 @@ export default function ListingsClient() {
         setListings(fetchedListings);
       } catch (error) {
         console.error('Error fetching listings:', error);
-      } finally {
-        setLoading(false);
       }
     };
 

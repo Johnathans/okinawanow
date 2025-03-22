@@ -1,68 +1,92 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, FormEvent } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGoogle } from '@fortawesome/free-brands-svg-icons';
+import { faGoogle, faFacebook } from '@fortawesome/free-brands-svg-icons';
 import { faEnvelope, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { signInWithGoogle, signInWithEmail, signUpWithEmail, resetPassword } from '@/lib/firebase-auth';
 import { useRouter } from 'next/navigation';
+import { auth } from '@/lib/firebase';
+import { signInWithPopup, GoogleAuthProvider, FacebookAuthProvider } from 'firebase/auth';
 
 type AuthMode = 'signin' | 'signup' | 'reset';
 
 interface AuthModalProps {
   show: boolean;
   onClose: () => void;
+  onSuccess?: () => void;
 }
 
-export default function AuthModal({ show, onClose }: AuthModalProps) {
+interface AuthFormData {
+  email: string;
+  password: string;
+  confirmPassword: string;
+  displayName: string;
+}
+
+export default function AuthModal({ show, onClose, onSuccess }: AuthModalProps) {
   const router = useRouter();
   const [mode, setMode] = useState<AuthMode>('signin');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [displayName, setDisplayName] = useState('');
+  const [formData, setFormData] = useState<AuthFormData>({
+    email: '',
+    password: '',
+    confirmPassword: '',
+    displayName: ''
+  });
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const handleGoogleSignIn = async () => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+
     try {
-      setError('');
-      setLoading(true);
-      await signInWithGoogle();
+      if (mode === 'signup') {
+        if (formData.password !== formData.confirmPassword) {
+          throw new Error('Passwords do not match');
+        }
+        await signUpWithEmail(formData.email, formData.password, formData.displayName);
+        router.push('/profile-setup');
+      } else if (mode === 'signin') {
+        await signInWithEmail(formData.email, formData.password);
+        router.push('/profile-setup');
+      } else if (mode === 'reset') {
+        await resetPassword(formData.email);
+        alert('Password reset email sent! Check your inbox.');
+      }
       onClose();
-      router.push('/profile-setup');
-    } catch (error: any) {
-      setError(error.message);
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'An error occurred');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleEmailAuth = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    setLoading(true);
-
+  const handleGoogleSignIn = async () => {
     try {
-      if (mode === 'signup') {
-        if (password !== confirmPassword) {
-          throw new Error('Passwords do not match');
-        }
-        await signUpWithEmail(email, password, displayName);
-        router.push('/profile-setup');
-      } else if (mode === 'signin') {
-        await signInWithEmail(email, password);
-        router.push('/profile-setup');
-      } else if (mode === 'reset') {
-        await resetPassword(email);
-        alert('Password reset email sent! Check your inbox.');
-      }
+      setError(null);
+      setLoading(true);
+      await signInWithGoogle();
+      onSuccess?.();
       onClose();
-    } catch (error: any) {
-      setError(error.message);
+      router.push('/profile-setup');
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Failed to sign in with Google');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleFacebookSignIn = async () => {
+    try {
+      const provider = new FacebookAuthProvider();
+      await signInWithPopup(auth, provider);
+      onSuccess?.();
+      onClose();
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Failed to sign in with Facebook');
     }
   };
 
@@ -100,6 +124,15 @@ export default function AuthModal({ show, onClose }: AuthModalProps) {
                 Continue with Google
               </button>
 
+              <button
+                className="btn btn-outline-dark w-100 mb-3"
+                onClick={handleFacebookSignIn}
+                disabled={loading}
+              >
+                <FontAwesomeIcon icon={faFacebook} className="me-2" />
+                Continue with Facebook
+              </button>
+
               <div className="position-relative text-center my-3">
                 <hr className="text-muted" />
                 <span className="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted">
@@ -107,15 +140,15 @@ export default function AuthModal({ show, onClose }: AuthModalProps) {
                 </span>
               </div>
 
-              <form onSubmit={handleEmailAuth}>
+              <form onSubmit={handleSubmit}>
                 {mode === 'signup' && (
                   <div className="mb-3">
                     <input
                       type="text"
                       className="form-control"
                       placeholder="Full Name"
-                      value={displayName}
-                      onChange={(e) => setDisplayName(e.target.value)}
+                      value={formData.displayName}
+                      onChange={(e) => setFormData({ ...formData, displayName: e.target.value })}
                       required
                     />
                   </div>
@@ -126,8 +159,8 @@ export default function AuthModal({ show, onClose }: AuthModalProps) {
                     type="email"
                     className="form-control"
                     placeholder="Email Address"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     required
                   />
                 </div>
@@ -139,8 +172,8 @@ export default function AuthModal({ show, onClose }: AuthModalProps) {
                         type={showPassword ? 'text' : 'password'}
                         className="form-control"
                         placeholder="Password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        value={formData.password}
+                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                         required
                       />
                       <button
@@ -161,8 +194,8 @@ export default function AuthModal({ show, onClose }: AuthModalProps) {
                         type={showPassword ? 'text' : 'password'}
                         className="form-control"
                         placeholder="Confirm Password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        value={formData.confirmPassword}
+                        onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                         required
                       />
                     </div>

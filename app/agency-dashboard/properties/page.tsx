@@ -1,45 +1,20 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faEdit, faEye, faTrash, faBuilding, faMapMarkerAlt, faYen, faDollarSign } from '@fortawesome/free-solid-svg-icons';
-import { collection, query, where, getDocs, doc, getDoc, deleteDoc, addDoc, updateDoc } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, getDoc, deleteDoc, addDoc, updateDoc, setDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { onAuthStateChanged } from 'firebase/auth';
 import { db, auth, storage } from '@/lib/firebase';
+import { Property, PropertyType, PropertyStatus, PetPolicy } from '@/types/property';
 
-// Property type definition
-interface Property {
-  id: string;
-  title: string;
-  description: string;
-  location: string;
-  price: number;
-  priceUSD: number;
-  bedrooms: number;
-  bathrooms: number;
-  floorArea: number;
-  propertyType: string;
-  images: string[];
-  status: string;
-  features: string[];
-  baseProximity: {
-    baseName: string;
-    distanceKm: number;
-    shuttleAvailable: boolean;
-  }[];
-  militaryInfo: {
-    allowanceCompatible: boolean;
-    militaryDiscount: number;
-    sofaContractAccepted: boolean;
-  };
-  amenities: string[];
-  agencyId: string;
-  createdAt: string;
-  updatedAt: string;
+interface PropertyState {
+  properties: Property[];
+  loading: boolean;
+  error: string | null;
 }
 
-// Form state type
 interface PropertyFormData {
   title: string;
   description: string;
@@ -49,7 +24,7 @@ interface PropertyFormData {
   bedrooms: number;
   bathrooms: number;
   floorArea: number;
-  propertyType: string;
+  propertyType: PropertyType;
   status: string;
   features: string[];
   baseProximity: {
@@ -74,7 +49,7 @@ const initialFormData: PropertyFormData = {
   bedrooms: 1,
   bathrooms: 1,
   floorArea: 0,
-  propertyType: 'Apartment',
+  propertyType: PropertyType.Apartment,
   status: 'Active',
   features: [],
   baseProximity: [],
@@ -89,7 +64,7 @@ const initialFormData: PropertyFormData = {
 export default function PropertiesPage() {
   const [properties, setProperties] = React.useState<Property[]>([]);
   const [agencyName, setAgencyName] = React.useState('');
-  const [loading, setLoading] = React.useState(true);
+  const [loading, setLoading] = React.useState(false);
   const [agencyLoading, setAgencyLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
   const [showForm, setShowForm] = React.useState(false);
@@ -213,7 +188,6 @@ export default function PropertiesPage() {
       for (const doc of propertiesSnap.docs) {
         console.log('Deleting property:', doc.id);
         await deleteDoc(doc.ref);
-        await deleteDoc(doc(listingsRef, doc.id));
       }
       console.log('Agency data cleanup complete');
 
@@ -221,79 +195,116 @@ export default function PropertiesPage() {
       console.log('After agency cleanup:');
       await listAllListings();
 
-      // Sample property templates
-      const templates = [
+      const addedProperties: Property[] = [
         {
-          title: 'Modern Apartment near Camp Foster',
-          description: 'Spacious and modern apartment perfect for military families',
+          id: 'sample1',
+          propertyId: 'PROP001',
+          title: 'Modern Apartment in Chatan',
+          description: 'A beautiful modern apartment close to American Village',
           location: 'Chatan, Okinawa',
+          city: 'Chatan',
           price: 150000,
           priceUSD: 1000,
-          propertyType: 'Apartment',
+          propertyType: PropertyType.Apartment,
+          status: PropertyStatus.Active,
+          negotiable: true,
+          bedrooms: 2,
+          bathrooms: 1,
+          floorArea: 75,
+          parkingSpaces: 1,
+          yearBuilt: 2020,
+          availableFrom: new Date().toISOString(),
+          leaseTerm: '12 months',
+          nearestBase: 'Kadena Air Base',
+          baseInspected: true,
+          baseProximity: [
+            {
+              baseName: 'Kadena Air Base',
+              distanceKm: 2.5,
+              shuttleAvailable: true
+            }
+          ],
+          moveInCosts: {
+            deposit: 2,
+            keyMoney: 1,
+            agencyFee: 1,
+            guarantorFee: 0.5
+          },
+          utilitiesIncluded: false,
+          petPolicy: [PetPolicy.CatsAllowed],
+          interiorAmenities: ['Air Conditioning', 'Washer/Dryer'],
+          bathroomAmenities: ['Unit Bath', 'Toilet with Washlet'],
+          kitchenAmenities: ['Full Kitchen', 'IH Stove'],
+          buildingAmenities: ['Elevator', 'Auto-lock'],
+          utilityAmenities: ['Internet Ready', 'Cable Ready'],
+          securityAmenities: ['Security Camera', 'Intercom'],
+          locationFeatures: ['Near Train Station', 'Near Shopping'],
           images: [
             'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80',
             'https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?auto=format&fit=crop&w=800&q=80'
-          ]
+          ],
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          createdBy: auth.currentUser?.uid || '',
+          agencyId: auth.currentUser?.uid || ''
         },
         {
-          title: 'Ocean View House in American Village',
-          description: 'Beautiful house with stunning ocean views',
+          id: 'sample2',
+          propertyId: 'PROP002',
+          title: 'Spacious House near American Village',
+          description: 'A spacious family home with great amenities',
           location: 'American Village, Okinawa',
+          city: 'Chatan',
           price: 200000,
           priceUSD: 1350,
-          propertyType: 'House',
+          propertyType: PropertyType.House,
+          status: PropertyStatus.Active,
+          negotiable: true,
+          bedrooms: 3,
+          bathrooms: 2,
+          floorArea: 120,
+          parkingSpaces: 2,
+          yearBuilt: 2018,
+          availableFrom: new Date().toISOString(),
+          leaseTerm: '24 months',
+          nearestBase: 'Foster',
+          baseInspected: true,
+          baseProximity: [
+            {
+              baseName: 'Camp Foster',
+              distanceKm: 3.0,
+              shuttleAvailable: true
+            }
+          ],
+          moveInCosts: {
+            deposit: 2,
+            keyMoney: 1,
+            agencyFee: 1,
+            guarantorFee: 0.5
+          },
+          utilitiesIncluded: false,
+          petPolicy: [PetPolicy.DogsAllowed, PetPolicy.CatsAllowed],
+          interiorAmenities: ['Air Conditioning', 'Washer/Dryer', 'Storage'],
+          bathroomAmenities: ['Separate Bath/Shower', 'Double Sink'],
+          kitchenAmenities: ['Full Kitchen', 'Dishwasher', 'Island Kitchen'],
+          buildingAmenities: ['Bicycle Parking', 'Trash Room'],
+          utilityAmenities: ['Internet Ready', 'Cable Ready'],
+          securityAmenities: ['Security Camera', 'Double Lock'],
+          locationFeatures: ['Near Shopping', 'Near Park'],
           images: [
             'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80',
             'https://images.unsplash.com/photo-1510784722466-f2aa9c52fff6?auto=format&fit=crop&w=800&q=80'
-          ]
-        },
-        {
-          title: 'Family Home near Kadena',
-          description: 'Perfect family home close to Kadena Air Base',
-          location: 'Kadena, Okinawa',
-          price: 180000,
-          priceUSD: 1200,
-          propertyType: 'House',
-          images: [
-            'https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=800&q=80',
-            'https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=800&q=80'
-          ]
+          ],
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          createdBy: auth.currentUser?.uid || '',
+          agencyId: auth.currentUser?.uid || ''
         }
       ];
 
-      const addedProperties = [];
-      
-      // Generate properties based on templates
-      for (let i = 0; i < 6; i++) {
-        const template = templates[i % templates.length];
-        const property = {
-          ...template,
-          bedrooms: Math.floor(Math.random() * 3) + 2,
-          bathrooms: Math.floor(Math.random() * 2) + 1,
-          floorArea: Math.floor(Math.random() * 50) + 70,
-          status: 'Active',
-          features: ['Parking', 'Air Conditioning', 'Internet'],
-          baseProximity: [
-            {
-              baseName: template.location.includes('Foster') ? 'Camp Foster' : 
-                       template.location.includes('Kadena') ? 'Kadena Air Base' : 'Camp Kinser',
-              distanceKm: Math.floor(Math.random() * 3) + 1,
-              shuttleAvailable: Math.random() > 0.5
-            }
-          ],
-          militaryInfo: {
-            allowanceCompatible: true,
-            militaryDiscount: Math.floor(Math.random() * 5) + 3,
-            sofaContractAccepted: true
-          },
-          amenities: ['Central AC', 'Dishwasher', 'Internet Ready'],
-          agencyId: auth.currentUser.uid,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
-        };
-
-        // Add to properties collection
-        console.log('Adding property based on template:', template.title);
+      // Add to properties collection
+      for (const property of addedProperties) {
+        console.log('Adding property:', property.title);
         const propertyDoc = await addDoc(collection(db, 'properties'), property);
         console.log('Added property:', propertyDoc.id);
         
@@ -303,8 +314,6 @@ export default function PropertiesPage() {
           id: propertyDoc.id
         });
         console.log('Added listing:', propertyDoc.id);
-        
-        addedProperties.push({ id: propertyDoc.id, ...property });
       }
       
       setProperties(addedProperties);
@@ -558,7 +567,7 @@ export default function PropertiesPage() {
       bedrooms,
       bathrooms,
       floorArea: Math.floor(Math.random() * 50) + 70, // 70-120 m²
-      propertyType,
+      propertyType: propertyTypes.includes('Apartment') ? PropertyType.Apartment : PropertyType.House,
       images: [
         'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1000',
         'https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?auto=format&fit=crop&w=1000'
@@ -572,7 +581,7 @@ export default function PropertiesPage() {
         sofaContractAccepted: true
       },
       amenities: selectedAmenities,
-      agencyId: auth.currentUser.uid,
+      agencyId: auth.currentUser?.uid || '',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
@@ -680,7 +689,7 @@ export default function PropertiesPage() {
   };
 
   // Handle form submission
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     
     if (!validateForm()) {
@@ -708,7 +717,7 @@ export default function PropertiesPage() {
       const propertyData = {
         ...formData,
         images: imageUrls,
-        agencyId: auth.currentUser.uid,
+        agencyId: auth.currentUser?.uid || '',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       };
@@ -753,7 +762,7 @@ export default function PropertiesPage() {
   };
 
   // Handle property deletion
-  const handleDeleteProperty = async (propertyId: string) => {
+  const handleDeleteProperty = async (propertyId: string): Promise<void> => {
     if (!auth.currentUser) {
       setError('Please log in first');
       return;
@@ -802,6 +811,32 @@ export default function PropertiesPage() {
       if (timeout) clearTimeout(timeout);
     };
   }, [loading]);
+
+  React.useEffect(() => {
+    const fetchProperties = async () => {
+      if (!auth.currentUser?.uid) return;
+      
+      try {
+        setLoading(true);
+        const q = query(
+          collection(db, "properties"),
+          where("agencyId", "==", auth.currentUser.uid)
+        );
+        const querySnapshot = await getDocs(q);
+        const propertyData = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setProperties(propertyData);
+      } catch (err) {
+        setError(err instanceof Error ? err : new Error('Failed to fetch properties'));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProperties();
+  }, [auth.currentUser?.uid]);
 
   if (authLoading) {
     return (

@@ -198,12 +198,9 @@ export default function AgenciesPage() {
                                     className="text-decoration-none"
                                 >
                                     <div 
-                                        className={`row align-items-center mx-2 py-4 ${index !== filteredAndSortedAgencies.length - 1 ? 'border-bottom' : ''}`}
+                                        className={`row align-items-center mx-2 py-4 ${index !== filteredAndSortedAgencies.length - 1 ? 'border-bottom' : ''} p-4 rounded cursor-pointer hover:bg-pink-50`}
                                         style={{ 
-                                            transition: 'background-color 0.2s',
-                                            ':hover': {
-                                                backgroundColor: 'var(--light-pink)'
-                                            }
+                                            transition: 'background-color 0.2s'
                                         }}
                                     >
                                         <div className="col-5">
