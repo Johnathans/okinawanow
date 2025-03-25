@@ -1,0 +1,142 @@
+[
+  {
+    "id": "57u",
+    "title": "New",
+    "location": "uruma",
+    "price": 0,
+    "images": [
+      "https://www.acefamilyhousing.com/wp-content/uploads/2025/03/IMG_0709.jpg"
+    ],
+    "propertyType": "apartment",
+    "description": "New",
+    "url": "https://www.acefamilyhousing.com/rental/57u-apartment-in-uruma/",
+    "source": "ace",
+    "updatedAt": "2025-03-13T00:05:46.569Z"
+  },
+  {
+    "id": "55o",
+    "title": "New <img decoding=\"async\" width=\"300\" height=\"200\" src=\"https://www.acefamilyhousing.com/wp-content/uploads/2025/03/IMG-9333-300x200.jpg\" class=\"teaser-left-thumb wp-post-image\" alt=\"\" data-eio=\"l\" />",
+    "location": "okinawa",
+    "price": 0,
+    "images": [
+      "https://www.acefamilyhousing.com/wp-content/uploads/2025/03/IMG-9333.jpg"
+    ],
+    "propertyType": "apartment",
+    "description": "New <img decoding=\"async\" width=\"300\" height=\"200\" src=\"https://www.acefamilyhousing.com/wp-content/uploads/2025/03/IMG-9333-300x200.jpg\" class=\"teaser-left-thumb wp-post-image\" alt=\"\" data-eio=\"l\" />",
+    "url": "https://www.acefamilyhousing.com/rental/55o-apartment-in-okinawa-city/",
+    "source": "ace",
+    "updatedAt": "2025-03-13T00:05:46.570Z"
+  },
+  {
+    "id": "57c",
+    "title": "New <img decoding=\"async\" width=\"300\" height=\"200\" src=\"https://www.acefamilyhousing.com/wp-content/uploads/2025/03/IMG-5217-300x200.jpg\" class=\"teaser-left-thumb wp-post-image\" alt=\"\" data-eio=\"l\" />",
+    "location": "chatan",
+    "price": 0,
+    "images": [
+      "https://www.acefamilyhousing.com/wp-content/uploads/2025/03/IMG-5217.jpg"
+    ],
+    "propertyType": "apartment",
+    "description": "New <img decoding=\"async\" width=\"300\" height=\"200\" src=\"https://www.acefamilyhousing.com/wp-content/uploads/2025/03/IMG-5217-300x200.jpg\" class=\"teaser-left-thumb wp-post-image\" alt=\"\" data-eio=\"l\" />",
+    "url": "https://www.acefamilyhousing.com/rental/57c-apartment-in-chatan/",
+    "source": "ace",
+    "updatedAt": "2025-03-13T00:05:46.570Z"
+  },
+  {
+    "id": "54o",
+    "title": "<img decoding=\"async\" width=\"300\" height=\"200\" src=\"https://www.acefamilyhousing.com/wp-content/uploads/2025/03/IMG-6117-300x200.jpg\" class=\"teaser-left-thumb wp-post-image\" alt=\"\" data-eio=\"l\" />",
+    "location": "okinawa",
+    "price": 0,
+    "images": [
+      "https://www.acefamilyhousing.com/wp-content/uploads/2025/03/IMG-6117.jpg"
+    ],
+    "propertyType": "duplex",
+    "description": "<img decoding=\"async\" width=\"300\" height=\"200\" src=\"https://www.acefamilyhousing.com/wp-content/uploads/2025/03/IMG-6117-300x200.jpg\" class=\"teaser-left-thumb wp-post-image\" alt=\"\" data-eio=\"l\" />",
+    "url": "https://www.acefamilyhousing.com/rental/54o-duplex-in-okinawa-city/",
+    "source": "ace",
+    "updatedAt": "2025-03-13T00:05:46.570Z"
+  },
+  {
+    "id": "56k",
+    "title": "<img decoding=\"async\" width=\"300\" height=\"200\" src=\"https://www.acefamilyhousing.com/wp-content/uploads/2025/03/IMG-9628-300x200.jpg\" class=\"teaser-left-thumb wp-post-image\" alt=\"\" data-eio=\"l\" />",
+    "location": "kin",
+    "price": 0,
+    "images": [
+      "https://www.acefamilyhousing.com/wp-content/uploads/2025/03/IMG-9628.jpg"
+    ],
+    "propertyType": "duplex",
+    "description": "<img decoding=\"async\" width=\"300\" height=\"200\" src=\"https://www.acefamilyhousing.com/wp-content/uploads/2025/03/IMG-9628-300x200.jpg\" class=\"teaser-left-thumb wp-post-image\" alt=\"\" data-eio=\"l\" />",
+    "url": "https://www.acefamilyhousing.com/rental/56k-duplex-in-kin/",
+    "source": "ace",
+    "updatedAt": "2025-03-13T00:05:46.570Z"
+  },
+  {
+    "id": "56c",
+    "title": "<img decoding=\"async\" width=\"300\" height=\"200\" src=\"https://www.acefamilyhousing.com/wp-content/uploads/2025/03/IMG_3360-300x200.jpg\" class=\"teaser-left-thumb wp-post-image\" alt=\"\" data-eio=\"l\" />",
+    "location": "chatan",
+    "price": 0,
+    "images": [
+      "https://www.acefamilyhousing.com/wp-content/uploads/2025/03/IMG_3360.jpg"
+    ],
+    "propertyType": "apartment",
+    "description": "<img decoding=\"async\" width=\"300\" height=\"200\" src=\"https://www.acefamilyhousing.com/wp-content/uploads/2025/03/IMG_3360-300x200.jpg\" class=\"teaser-left-thumb wp-post-image\" alt=\"\" data-eio=\"l\" />",
+    "url": "https://www.acefamilyhousing.com/rental/56c-apartment-in-chatan/",
+    "source": "ace",
+    "updatedAt": "2025-03-13T00:05:46.570Z"
+  },
+  {
+    "id": "77k",
+    "title": "<img decoding=\"async\" width=\"300\" height=\"200\" src=\"https://www.acefamilyhousing.com/wp-content/uploads/2025/03/IMG_3003-300x200.jpg\" class=\"teaser-left-thumb wp-post-image\" alt=\"\" data-eio=\"l\" />",
+    "location": "kitanakagusuku",
+    "price": 0,
+    "images": [
+      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAADIAQAAAAB6pOH4AAAAAnRSTlMAAHaTzTgAAAAeSURBVFjD7cExAQAAAMKg9U9tB2+gAAAAAAAAAOA3HngAARco3ZkAAAAASUVORK5CYII="
+    ],
+    "propertyType": "apartment",
+    "description": "<img decoding=\"async\" width=\"300\" height=\"200\" src=\"https://www.acefamilyhousing.com/wp-content/uploads/2025/03/IMG_3003-300x200.jpg\" class=\"teaser-left-thumb wp-post-image\" alt=\"\" data-eio=\"l\" />",
+    "url": "https://www.acefamilyhousing.com/rental/77k-apartment-in-kitanakagusuku/",
+    "source": "ace",
+    "updatedAt": "2025-03-13T00:05:46.570Z"
+  },
+  {
+    "id": "78g",
+    "title": "<img decoding=\"async\" width=\"300\" height=\"200\" src=\"https://www.acefamilyhousing.com/wp-content/uploads/2025/03/IMG-6602-300x200.jpg\" class=\"teaser-left-thumb wp-post-image\" alt=\"\" data-eio=\"l\" />",
+    "location": "ginowan",
+    "price": 0,
+    "images": [
+      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAADIAQAAAAB6pOH4AAAAAnRSTlMAAHaTzTgAAAAeSURBVFjD7cExAQAAAMKg9U9tB2+gAAAAAAAAAOA3HngAARco3ZkAAAAASUVORK5CYII="
+    ],
+    "propertyType": "apartment",
+    "description": "<img decoding=\"async\" width=\"300\" height=\"200\" src=\"https://www.acefamilyhousing.com/wp-content/uploads/2025/03/IMG-6602-300x200.jpg\" class=\"teaser-left-thumb wp-post-image\" alt=\"\" data-eio=\"l\" />",
+    "url": "https://www.acefamilyhousing.com/rental/78g-apartment-in-ginowan/",
+    "source": "ace",
+    "updatedAt": "2025-03-13T00:05:46.570Z"
+  },
+  {
+    "id": "53o",
+    "title": "<img decoding=\"async\" width=\"300\" height=\"200\" src=\"https://www.acefamilyhousing.com/wp-content/uploads/2025/03/IMG_4475-300x200.jpg\" class=\"teaser-left-thumb wp-post-image\" alt=\"\" data-eio=\"l\" />",
+    "location": "okinawa",
+    "price": 0,
+    "images": [
+      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAADIAQAAAAB6pOH4AAAAAnRSTlMAAHaTzTgAAAAeSURBVFjD7cExAQAAAMKg9U9tB2+gAAAAAAAAAOA3HngAARco3ZkAAAAASUVORK5CYII="
+    ],
+    "propertyType": "house",
+    "description": "<img decoding=\"async\" width=\"300\" height=\"200\" src=\"https://www.acefamilyhousing.com/wp-content/uploads/2025/03/IMG_4475-300x200.jpg\" class=\"teaser-left-thumb wp-post-image\" alt=\"\" data-eio=\"l\" />",
+    "url": "https://www.acefamilyhousing.com/rental/53o-house-in-okinawa-city/",
+    "source": "ace",
+    "updatedAt": "2025-03-13T00:05:46.570Z"
+  },
+  {
+    "id": "52o",
+    "title": "<img decoding=\"async\" width=\"300\" height=\"200\" src=\"https://www.acefamilyhousing.com/wp-content/uploads/2025/02/IMG_4306-300x200.jpg\" class=\"teaser-left-thumb wp-post-image\" alt=\"\" data-eio=\"l\" />",
+    "location": "okinawa",
+    "price": 0,
+    "images": [
+      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAADIAQAAAAB6pOH4AAAAAnRSTlMAAHaTzTgAAAAeSURBVFjD7cExAQAAAMKg9U9tB2+gAAAAAAAAAOA3HngAARco3ZkAAAAASUVORK5CYII="
+    ],
+    "propertyType": "duplex",
+    "description": "<img decoding=\"async\" width=\"300\" height=\"200\" src=\"https://www.acefamilyhousing.com/wp-content/uploads/2025/02/IMG_4306-300x200.jpg\" class=\"teaser-left-thumb wp-post-image\" alt=\"\" data-eio=\"l\" />",
+    "url": "https://www.acefamilyhousing.com/rental/52o-duplex-in-okinawa-city/",
+    "source": "ace",
+    "updatedAt": "2025-03-13T00:05:46.571Z"
+  }
+]

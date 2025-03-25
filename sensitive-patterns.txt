@@ -1,0 +1,16 @@
+# This file lists sensitive patterns that should never be committed to the repository
+# Each line represents a pattern that should be treated as sensitive
+
+# API Keys
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=
+AIzaSyBPPdXNml2dUiyndMwEbb8zO7PpBurHK3E
+
+# Firebase Service Account
+private_key_id=[a-f0-9]{40}
+private_key=.*
+client_email=.*@.*\.iam\.gserviceaccount\.com
+client_id=\d+
+
+# Test Credentials
+test123!
+testagency@okinawanow.com

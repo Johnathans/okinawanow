@@ -1,0 +1,54 @@
+:root {
+  --primary: #e75d7c;
+  --secondary: #d64d6c;
+  --light: #fdf2f4;
+  --medium: #f4c6ce;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+/* Bootstrap Overrides */
+.btn-primary {
+  background-color: var(--primary);
+  border-color: var(--primary);
+}
+
+.btn-primary:hover {
+  background-color: var(--secondary);
+  border-color: var(--secondary);
+}
+
+.border-primary {
+  border-color: var(--primary) !important;
+}
+
+.bg-light {
+  background-color: var(--light) !important;
+}
+
+/* Form Styling */
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 0.25rem rgba(231, 93, 124, 0.25);
+}
+
+.form-range::-webkit-slider-thumb {
+  background-color: var(--primary);
+}
+
+.form-range::-moz-range-thumb {
+  background-color: var(--primary);
+}
+
+/* Card Styling */
+.card {
+  transition: all 0.2s ease-in-out;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
