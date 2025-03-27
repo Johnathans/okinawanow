@@ -1,0 +1,170 @@
+/* Navbar styles */
+
+/* Ensure all nav links are dark bold black */
+.nav-link {
+  color: #000000 !important;
+  font-weight: 600 !important;
+  position: relative;
+  transition: color 0.15s ease;
+}
+
+/* Dropdown animations */
+.dropdown-menu {
+  transition: all 0.2s;
+  margin-top: 0.5rem;
+  opacity: 0;
+  visibility: hidden;
+  display: block;
+}
+
+.dropdown:hover > .dropdown-menu,
+.dropdown-menu.show {
+  margin-top: 0;
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Mega Menu styles */
+.mega-menu {
+  border-radius: 0 0 0.75rem 0.75rem !important;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08) !important;
+  z-index: 1030;
+  left: 0;
+  right: 0;
+  padding: 1.5rem !important;
+  background-color: #ffffff;
+  border-top: 3px solid var(--primary-pink) !important;
+}
+
+.mega-menu h6 {
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.mega-menu .dropdown-item {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.95rem;
+  border-radius: 4px;
+}
+
+.mega-menu .dropdown-item:hover {
+  background-color: rgba(255, 56, 92, 0.05);
+}
+
+.mega-menu .dropdown-item .text-secondary {
+  color: var(--primary-pink) !important;
+  opacity: 0.8;
+}
+
+/* Dropdown item hover effect */
+.dropdown-item {
+  transition: background-color 0.15s ease;
+}
+
+.dropdown-item:hover {
+  background-color: rgba(231, 93, 124, 0.08);
+}
+
+/* Active nav link */
+.nav-link.active {
+  color: var(--primary-pink) !important;
+  font-weight: 700 !important;
+}
+
+/* Nav link hover effect */
+.nav-link:hover {
+  color: var(--primary-pink) !important;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 50%;
+  background-color: var(--primary-pink);
+  transition: all 0.3s ease;
+  opacity: 0;
+}
+
+.nav-link:hover::after {
+  width: 100%;
+  left: 0;
+  opacity: 1;
+}
+
+/* Don't show underline for dropdown toggles */
+.dropdown-toggle:hover::after {
+  opacity: 0;
+}
+
+/* Profile button styling */
+.profile-button {
+  background-color: #ffffff !important;
+  border: 1px solid var(--primary-pink) !important;
+  color: var(--black) !important;
+  transition: all 0.2s ease;
+}
+
+.profile-button:hover {
+  background-color: var(--light-pink) !important;
+  border-color: var(--dark-pink) !important;
+}
+
+.profile-button .fa-user-circle {
+  color: var(--primary-pink);
+}
+
+/* Dropdown icons */
+.nav-dropdown-icon {
+  font-size: 0.75rem;
+  opacity: 0.7;
+  transition: transform 0.2s ease;
+}
+
+.dropdown:hover .nav-dropdown-icon,
+.dropdown.show .nav-dropdown-icon {
+  transform: rotate(180deg);
+  opacity: 1;
+  color: var(--primary-pink);
+}
+
+/* Mobile menu adjustments */
+@media (max-width: 991.98px) {
+  .navbar-collapse {
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  
+  .dropdown-menu {
+    border: none;
+    box-shadow: none;
+    padding-left: 1.5rem;
+  }
+  
+  .nav-link::after {
+    display: none;
+  }
+  
+  .mega-menu {
+    position: static !important;
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 1rem !important;
+    border-top: none !important;
+  }
+  
+  .mega-menu .row > div {
+    margin-bottom: 1.5rem;
+  }
+  
+  .mega-menu .row > div:last-child {
+    margin-bottom: 0;
+  }
+}

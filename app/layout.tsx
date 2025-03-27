@@ -3,9 +3,10 @@ import { Raleway } from "next/font/google";
 import { Metadata, Viewport } from 'next';
 import Script from "next/script";
 import { AuthProvider } from '@/contexts/AuthContext';
+import { Toaster } from 'react-hot-toast';
+import Providers from './providers';
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import "@/styles/bootstrap.scss";
 import "@/styles/forms.css";
 import "@/config/fontawesome";
 import "./globals.scss";
@@ -67,13 +68,16 @@ export default function RootLayout({
     return (
         <html lang="en" className={raleway.className}>
             <body className="d-flex flex-column min-vh-100">
-                <AuthProvider>
-                    <div className="min-vh-100 d-flex flex-column">
-                        <Navbar />
-                        <main className="flex-grow-1">{children}</main>
-                        <Footer />
-                    </div>
-                </AuthProvider>
+                <Providers>
+                    <AuthProvider>
+                        <div className="min-vh-100 d-flex flex-column">
+                            <Navbar />
+                            <main className="flex-grow-1">{children}</main>
+                            <Footer />
+                        </div>
+                        <Toaster position="top-center" />
+                    </AuthProvider>
+                </Providers>
 
                 {/* Google Maps API */}
                 <Script

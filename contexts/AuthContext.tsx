@@ -4,12 +4,18 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { User } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { signInWithGoogle, signInWithEmail, signUpWithEmail, resetPassword } from '@/lib/firebase-auth';
-import { onAuthStateChanged, signOut as firebaseSignOut } from 'firebase/auth';
+import { onAuthStateChanged, signOut as firebaseSignOut, setPersistence, browserLocalPersistence } from 'firebase/auth';
+
+// Set persistence to LOCAL to ensure it survives page refreshes
+setPersistence(auth, browserLocalPersistence)
+  .catch((error) => {
+    console.error('Error setting auth persistence in context:', error);
+  });
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  signInWithGoogle: () => Promise<User>;
+  signInWithGoogle: () => Promise<any>;
   signInWithEmail: (email: string, password: string) => Promise<void>;
   signUpWithEmail: (email: string, password: string, displayName: string) => Promise<User>;
   resetPassword: (email: string) => Promise<void>;

@@ -59,7 +59,7 @@ export default function ListingList({ cityId, limit = 3 }: Props) {
     const cityListings = listings[cityId as keyof typeof listings] || [];
     const displayListings: Listing[] = cityListings.map(listing => ({
         ...listing,
-        listingId: listing.id,
+        id: listing.id,
         priceUSD: listing.price,
         listingType: ListingType.Apartment,
         squareMeters: listing.floorArea,
@@ -68,10 +68,18 @@ export default function ListingList({ cityId, limit = 3 }: Props) {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         userId: '',
-        nearestBase: '',
+        nearbyBases: [],
         lat: 0,
         lng: 0,
-        amenities: [],
+        amenities: {
+            interior: [],
+            bathroom: [],
+            kitchen: [],
+            building: [],
+            utility: [],
+            security: [],
+            location: []
+        },
         features: [],
         utilities: [],
         parkingOptions: [],
@@ -148,7 +156,7 @@ export default function ListingList({ cityId, limit = 3 }: Props) {
     return (
         <div className="row g-4">
             {displayListings.map((listing) => (
-                <div key={listing.listingId} className="col-md-6 col-lg-4">
+                <div key={listing.id} className="col-md-6 col-lg-4">
                     <ListingCard listing={listing} />
                 </div>
             ))}

@@ -6,15 +6,23 @@ import {
   sendPasswordResetEmail,
   updateProfile,
   UserCredential,
-  User
+  User,
+  setPersistence,
+  browserLocalPersistence
 } from 'firebase/auth';
 import { auth } from './firebase';
 
-export async function signInWithGoogle() {
+// Set persistence to LOCAL (survives browser restarts)
+setPersistence(auth, browserLocalPersistence)
+  .catch((error) => {
+    console.error('Error setting auth persistence:', error);
+  });
+
+export async function signInWithGoogle(): Promise<UserCredential> {
   const provider = new GoogleAuthProvider();
   try {
     const result = await signInWithPopup(auth, provider);
-    return result.user;
+    return result;
   } catch (error) {
     console.error('Error signing in with Google:', error);
     throw error;

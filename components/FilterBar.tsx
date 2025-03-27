@@ -49,10 +49,10 @@ export default function FilterBar() {
   const [filters, setFilters] = React.useState({
     location: searchParams.get('location') || '',
     nearestBase: searchParams.get('nearestBase') || '',
-    listingType: searchParams.get('listingType') || '',
+    listingType: searchParams.get('listingType') || searchParams.get('propertyType') || '',
     priceRange: searchParams.get('priceRange') || '',
-    bedrooms: searchParams.get('bedrooms') || '',
-    bathrooms: searchParams.get('bathrooms') || '',
+    bedrooms: searchParams.get('bedrooms') || searchParams.get('beds') || '',
+    bathrooms: searchParams.get('bathrooms') || searchParams.get('baths') || '',
     search: searchParams.get('search') || ''
   });
 
@@ -61,10 +61,10 @@ export default function FilterBar() {
     setFilters({
       location: searchParams.get('location') || '',
       nearestBase: searchParams.get('nearestBase') || '',
-      listingType: searchParams.get('listingType') || '',
+      listingType: searchParams.get('listingType') || searchParams.get('propertyType') || '',
       priceRange: searchParams.get('priceRange') || '',
-      bedrooms: searchParams.get('bedrooms') || '',
-      bathrooms: searchParams.get('bathrooms') || '',
+      bedrooms: searchParams.get('bedrooms') || searchParams.get('beds') || '',
+      bathrooms: searchParams.get('bathrooms') || searchParams.get('baths') || '',
       search: searchParams.get('search') || ''
     });
   }, [searchParams]);
@@ -75,10 +75,38 @@ export default function FilterBar() {
 
     // Update URL immediately
     const params = new URLSearchParams(window.location.search);
+    
+    // Handle parameter name mapping
+    const paramMapping: Record<string, string> = {
+      listingType: 'listingType', // Use new naming convention
+      bedrooms: 'bedrooms',       // Use new naming convention
+      bathrooms: 'bathrooms'      // Use new naming convention
+    };
+    
+    const paramKey = paramMapping[key] || key;
+    
     if (value) {
-      params.set(key, value.toLowerCase());
+      params.set(paramKey, value.toLowerCase());
+      
+      // Remove old parameter names if they exist
+      if (key === 'listingType' && params.has('propertyType')) {
+        params.delete('propertyType');
+      } else if (key === 'bedrooms' && params.has('beds')) {
+        params.delete('beds');
+      } else if (key === 'bathrooms' && params.has('baths')) {
+        params.delete('baths');
+      }
     } else {
-      params.delete(key);
+      params.delete(paramKey);
+      
+      // Also remove old parameter names if they exist
+      if (key === 'listingType' && params.has('propertyType')) {
+        params.delete('propertyType');
+      } else if (key === 'bedrooms' && params.has('beds')) {
+        params.delete('beds');
+      } else if (key === 'bathrooms' && params.has('baths')) {
+        params.delete('baths');
+      }
     }
     router.push(`/listings?${params.toString()}`);
   };

@@ -1,0 +1,43 @@
+/* Admin specific styles */
+
+.admin-sidebar {
+  position: fixed;
+  top: 72px; /* Height of navbar */
+  left: 0;
+  height: calc(100vh - 72px);
+  z-index: 1000;
+  overflow-y: auto;
+  transition: width 0.3s ease;
+}
+
+.admin-sidebar.open {
+  width: 250px;
+}
+
+.admin-sidebar.closed {
+  width: 60px;
+}
+
+.admin-content {
+  margin-left: 250px;
+  margin-top: 72px;
+  padding-bottom: 100px;
+  transition: margin-left 0.3s ease;
+  width: calc(100% - 250px);
+}
+
+.admin-content.sidebar-closed {
+  margin-left: 60px;
+  width: calc(100% - 60px);
+}
+
+@media (max-width: 768px) {
+  .admin-sidebar.open {
+    width: 200px;
+  }
+  
+  .admin-content {
+    margin-left: 200px;
+    width: calc(100% - 200px);
+  }
+}

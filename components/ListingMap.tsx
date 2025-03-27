@@ -28,7 +28,7 @@ export default function ListingMap({ listing, className = '', style = {} }: List
         const geocoder = new google.maps.Geocoder();
 
         // Add ", Okinawa, Japan" to improve geocoding accuracy
-        const fullAddress = `${listing.location}, Okinawa, Japan`;
+        const fullAddress = `${listing.prefecture}, ${listing.city}, Okinawa, Japan`;
 
         geocoder.geocode({ address: fullAddress }, (results, status) => {
           if (status === 'OK' && results && results[0] && mapRef.current) {
@@ -96,7 +96,7 @@ export default function ListingMap({ listing, className = '', style = {} }: List
         // Clean up map instance if needed
       }
     };
-  }, [listing.location]);
+  }, [listing.prefecture, listing.city]);
 
   return (
     <div 

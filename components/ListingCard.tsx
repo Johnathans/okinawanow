@@ -83,7 +83,7 @@ export default function ListingCard({ listing, onFavorite, isFavorite }: Props) 
                         </div>
                     </div>
                     <p className="text-muted mb-3" style={{ fontSize: '0.9rem' }}>
-                        {listing.location}
+                        {listing.prefecture}
                     </p>
                     <div className="d-flex gap-4">
                         <div className="d-flex align-items-center" style={{ color: '#636e72' }}>
@@ -94,9 +94,9 @@ export default function ListingCard({ listing, onFavorite, isFavorite }: Props) 
                             <FontAwesomeIcon icon={faBath} className="me-2" />
                             <span>{listing.bathrooms} Baths</span>
                         </div>
-                        {listing.floorArea && (
+                        {listing.squareMeters && (
                             <div style={{ color: '#636e72' }}>
-                                <span>{listing.floorArea}m²</span>
+                                <span>{listing.squareMeters}m²</span>
                             </div>
                         )}
                     </div>

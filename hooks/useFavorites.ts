@@ -1,68 +1,111 @@
-import { useState, useEffect } from 'react';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { useState, useEffect, useCallback } from 'react';
+import { doc, getDoc, setDoc, deleteDoc, collection, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import { User } from '@/types/user';
 
-interface UseFavoritesProps {
-  userId: string;
+interface UseFavoritesParamsForListing {
+  listingId: string;
+  currentUser?: User | null;
+  userId?: never;
 }
 
-export const useFavorites = ({ userId }: UseFavoritesProps) => {
+interface UseFavoritesParamsForUser {
+  userId: string;
+  listingId?: never;
+  currentUser?: never;
+}
+
+type UseFavoritesParams = UseFavoritesParamsForListing | UseFavoritesParamsForUser;
+
+export const useFavorites = (params: UseFavoritesParams) => {
+  const [hasFavorited, setHasFavorited] = useState(false);
   const [favorites, setFavorites] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
+  // For single listing favorite status
   useEffect(() => {
-    const loadFavorites = async () => {
-      try {
-        const userRef = doc(db, 'users', userId);
-        const userDoc = await getDoc(userRef);
-        
-        if (userDoc.exists()) {
-          const userData = userDoc.data();
-          setFavorites(userData.favorites || []);
-        } else {
-          // Initialize empty favorites for new user
-          await setDoc(userRef, { favorites: [] });
-          setFavorites([]);
+    if ('listingId' in params && params.listingId && params.currentUser) {
+      const fetchFavoriteStatus = async () => {
+        try {
+          const favoriteRef = doc(db, 'users', params.currentUser!.uid, 'favorites', params.listingId);
+          const favoriteDoc = await getDoc(favoriteRef);
+          
+          setHasFavorited(favoriteDoc.exists());
+        } catch (error) {
+          console.error('Error checking favorite status:', error);
         }
-        
-        setLoading(false);
-      } catch (err) {
-        console.error('Error loading favorites:', err);
-        setError('Failed to load favorites');
-        setLoading(false);
-      }
-    };
+      };
 
-    loadFavorites();
-  }, [userId]);
-
-  const toggleFavorite = async (listingId: string) => {
-    try {
-      const userRef = doc(db, 'users', userId);
-      
-      // Update local state optimistically
-      const newFavorites = favorites.includes(listingId)
-        ? favorites.filter(id => id !== listingId)
-        : [...favorites, listingId];
-      
-      setFavorites(newFavorites);
-      
-      // Update Firestore
-      await setDoc(userRef, { favorites: newFavorites }, { merge: true });
-    } catch (err) {
-      console.error('Error toggling favorite:', err);
-      setError('Failed to update favorites');
-      
-      // Revert local state on error
-      setFavorites(favorites);
+      fetchFavoriteStatus();
     }
-  };
+  }, [params]);
+
+  // For user's favorites list
+  useEffect(() => {
+    if ('userId' in params && params.userId) {
+      const fetchFavorites = async () => {
+        try {
+          const favoritesRef = collection(db, 'users', params.userId, 'favorites');
+          const favoritesSnapshot = await getDocs(favoritesRef);
+          const favoritesList = favoritesSnapshot.docs.map(doc => doc.id);
+          
+          setFavorites(favoritesList);
+        } catch (error) {
+          console.error('Error fetching favorites:', error);
+        }
+      };
+
+      fetchFavorites();
+    }
+  }, [params]);
+
+  const toggleFavorite = useCallback(async (listingIdParam?: string) => {
+    // For single listing
+    if ('listingId' in params && params.currentUser) {
+      try {
+        const favoriteRef = doc(db, 'users', params.currentUser.uid, 'favorites', params.listingId);
+        const favoriteDoc = await getDoc(favoriteRef);
+
+        if (favoriteDoc.exists()) {
+          await deleteDoc(favoriteRef);
+          setHasFavorited(false);
+        } else {
+          await setDoc(favoriteRef, {
+            listingId: params.listingId,
+            userId: params.currentUser.uid,
+            createdAt: new Date().toISOString()
+          });
+          setHasFavorited(true);
+        }
+      } catch (error) {
+        console.error('Error toggling favorite:', error);
+      }
+    } 
+    // For user's favorites list
+    else if ('userId' in params && params.userId && listingIdParam) {
+      try {
+        const favoriteRef = doc(db, 'users', params.userId, 'favorites', listingIdParam);
+        const favoriteDoc = await getDoc(favoriteRef);
+
+        if (favoriteDoc.exists()) {
+          await deleteDoc(favoriteRef);
+          setFavorites(prev => prev.filter(id => id !== listingIdParam));
+        } else {
+          await setDoc(favoriteRef, {
+            listingId: listingIdParam,
+            userId: params.userId,
+            createdAt: new Date().toISOString()
+          });
+          setFavorites(prev => [...prev, listingIdParam]);
+        }
+      } catch (error) {
+        console.error('Error toggling favorite:', error);
+      }
+    }
+  }, [params]);
 
   return {
+    hasFavorited,
     favorites,
-    loading,
-    error,
     toggleFavorite
   };
 };

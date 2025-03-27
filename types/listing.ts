@@ -19,19 +19,23 @@ export enum PetPolicy {
   NoPets = 'no_pets'
 }
 
-// Move-in costs interface
-export interface MoveInCosts {
-  deposit: number;          // In months of rent
-  keyMoney: number;        // In months of rent
-  agencyFee: number;       // In months of rent
-  guarantorFee: number;    // In months of rent
+// Base proximity interface
+export interface NearbyBase {
+  name: string;
+  distance: number;
+  shuttleAvailable: boolean;
 }
 
-// Base proximity interface
-export interface BaseProximity {
-  baseName: string;
-  distanceKm: number;
-  shuttleAvailable: boolean;
+// Agency interface
+export interface Agency {
+  id?: string;
+  name: string;
+  logo?: string;
+  description?: string;
+  phone?: string;
+  email?: string;
+  website?: string;
+  location?: string;
 }
 
 // Amenity categories
@@ -107,76 +111,62 @@ export const LOCATION_FEATURES = [
   'Safe Neighborhood'
 ] as const;
 
+// Main listing interface
 export interface Listing {
   id?: string;
-  listingId: string;
   title: string;
   description: string;
-  
-  // Basic Info
   price: number;
-  priceUSD: number;
+  priceUSD?: number;
   listingType: ListingType;
-  status: ListingStatus;
-  negotiable: boolean;
-  available: boolean;  // Whether the listing is currently available
-  featured: boolean;   // Whether the listing is featured
-  
-  // Listing Details
+  status?: ListingStatus;
+  negotiable?: boolean;
+  available?: boolean;
+  featured?: boolean;
   bedrooms: number;
   bathrooms: number;
-  floorArea: number;
-  squareMeters?: number;  // For backward compatibility
-  parkingSpaces: number;
+  squareMeters: number;
+  parkingSpaces?: number;
   yearBuilt?: number;
-  availableFrom: string;
-  leaseTerm: string;
-  
-  // Location
-  location: string;
+  availableFrom?: string;
+  leaseTerm?: string;
+  prefecture?: string;
   city: string;
-  nearestBase: string;
-  baseInspected: boolean;
-  baseProximity: BaseProximity[];
+  baseInspected?: boolean;
+  nearbyBases?: NearbyBase[];
   lat?: number;
   lng?: number;
-  
-  // Costs & Terms
-  moveInCosts: MoveInCosts;
-  utilitiesIncluded: boolean;
-  
-  // Pet Policy
-  petPolicy: PetPolicy[];
-  
-  // Amenities
-  amenities?: string[];  // Legacy field for backward compatibility
-  interiorAmenities: typeof INTERIOR_AMENITIES[number][];
-  bathroomAmenities: typeof BATHROOM_AMENITIES[number][];
-  kitchenAmenities: typeof KITCHEN_AMENITIES[number][];
-  buildingAmenities: typeof BUILDING_AMENITIES[number][];
-  utilityAmenities: typeof UTILITY_AMENITIES[number][];
-  securityAmenities: typeof SECURITY_AMENITIES[number][];
-  locationFeatures: typeof LOCATION_FEATURES[number][];
-  
-  // Media
+  securityDeposit?: number;
+  keyMoney?: number;
+  agencyFee?: number;
+  guarantorFee?: number;
+  utilitiesIncluded?: boolean;
+  petPolicy?: string[];
+  amenities?: {
+    interior?: string[];
+    bathroom?: string[];
+    kitchen?: string[];
+    building?: string[];
+    utility?: string[];
+    security?: string[];
+    location?: string[];
+  };
   images: string[];
   floorPlan?: string;
   video?: string;
-  
-  // Metadata
-  createdAt: string;
-  updatedAt: string;
-  createdBy: string;
+  createdAt?: string;
+  updatedAt?: string;
+  createdBy?: string;
   agencyId?: string;
-  
-  // Review Status (for non-agency submissions)
+  agency?: Agency;
   reviewStatus?: 'pending' | 'approved' | 'rejected';
   reviewComment?: string;
   reviewedAt?: string;
   reviewedBy?: string;
 }
 
-// Type alias for backward compatibility during transition
+// Type aliases for backward compatibility during transition
 export type Property = Listing;
 export type PropertyType = ListingType;
 export type PropertyStatus = ListingStatus;
+export type BaseProximity = NearbyBase;

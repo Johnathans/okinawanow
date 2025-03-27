@@ -1,23 +1,25 @@
 // Import functions first
-@import "~bootstrap/scss/functions";
-@import "~bootstrap/scss/variables";
-@import "~bootstrap/scss/variables-dark";
-@import "~bootstrap/scss/maps";
-@import "~bootstrap/scss/mixins";
-@import "~bootstrap/scss/utilities";
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/variables-dark";
+@import "bootstrap/scss/maps";
+@import "bootstrap/scss/mixins";
+@import "bootstrap/scss/utilities";
 
 // Variable overrides
-$primary: #e75d7c;
-$secondary: #d64d6c;
-$light: #fdf2f4;
-$medium: #f4c6ce;
+$primary: #FF385C;
+$secondary: #717171;
+$light: #F7F7F7;
+$dark: #222222;
+$medium-grey: #717171;
 
 $theme-colors: (
   "primary": $primary,
   "secondary": $secondary,
   "light": $light,
-  "medium": $medium
+  "dark": $dark,
+  "medium-grey": $medium-grey
 );
 
 // Import Bootstrap
-@import "~bootstrap/scss/bootstrap";
+@import "bootstrap/scss/bootstrap";

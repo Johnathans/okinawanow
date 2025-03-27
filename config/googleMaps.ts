@@ -89,8 +89,8 @@ export const defaultMapOptions: google.maps.MapOptions = {
 
 export const loaderOptions: LoaderOptions = {
   apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '',
-  version: 'weekly',
-  libraries: ['places', 'geometry', 'drawing']
+  version: process.env.NEXT_PUBLIC_GOOGLE_MAPS_VERSION || 'weekly',
+  libraries: (process.env.NEXT_PUBLIC_GOOGLE_MAPS_LIBRARIES?.split(',') || ['places', 'geometry', 'drawing']) as any
 };
 
 export const militaryBases = {

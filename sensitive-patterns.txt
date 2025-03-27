@@ -3,7 +3,7 @@
 
 # API Keys
 NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=
-AIzaSyBPPdXNml2dUiyndMwEbb8zO7PpBurHK3E
+GOOGLE_MAPS_API_KEY=
 
 # Firebase Service Account
 private_key_id=[a-f0-9]{40}

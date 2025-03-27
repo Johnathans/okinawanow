@@ -16,7 +16,7 @@ import {
 import { Listing, ListingType, ListingStatus, PetPolicy, INTERIOR_AMENITIES, BATHROOM_AMENITIES, KITCHEN_AMENITIES, BUILDING_AMENITIES, UTILITY_AMENITIES, SECURITY_AMENITIES, LOCATION_FEATURES } from '@/types/listing';
 
 const initialFormData: Partial<Listing> = {
-  listingId: '',
+  id: '',
   title: '',
   description: '',
   price: 0,
@@ -26,29 +26,28 @@ const initialFormData: Partial<Listing> = {
   negotiable: false,
   bedrooms: 0,
   bathrooms: 0,
-  floorArea: 0,
+  squareMeters: 0,
   parkingSpaces: 0,
   availableFrom: new Date().toISOString(),
   leaseTerm: '',
-  location: '',
+  prefecture: '',
   city: '',
-  nearestBase: '',
+  nearbyBases: [],
   baseInspected: false,
-  baseProximity: [],
-  moveInCosts: {
-    deposit: 0,
-    keyMoney: 0,
-    agencyFee: 0,
-    guarantorFee: 0
-  },
+  securityDeposit: 0,
+  keyMoney: 0,
+  agencyFee: 0,
+  guarantorFee: 0,
   utilitiesIncluded: false,
-  interiorAmenities: [],
-  bathroomAmenities: [],
-  kitchenAmenities: [],
-  buildingAmenities: [],
-  utilityAmenities: [],
-  securityAmenities: [],
-  locationFeatures: [],
+  amenities: {
+    interior: [],
+    bathroom: [],
+    kitchen: [],
+    building: [],
+    utility: [],
+    security: [],
+    location: []
+  },
   images: [],
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
@@ -114,7 +113,7 @@ export default function PropertiesPage() {
     const { name, value } = e.target;
     
     // Handle numeric fields
-    if (['price', 'priceUSD', 'bedrooms', 'bathrooms', 'floorArea', 'parkingSpaces'].includes(name)) {
+    if (['price', 'priceUSD', 'bedrooms', 'bathrooms', 'squareMeters', 'parkingSpaces', 'securityDeposit', 'keyMoney', 'agencyFee', 'guarantorFee'].includes(name)) {
       setFormData(prev => ({
         ...prev,
         [name]: Number(value)
@@ -142,50 +141,71 @@ export default function PropertiesPage() {
     }
   };
 
-  const handleAmenityChange = (category: keyof Pick<Listing, 'interiorAmenities' | 'bathroomAmenities' | 'kitchenAmenities' | 'buildingAmenities' | 'utilityAmenities' | 'securityAmenities' | 'locationFeatures'>, value: string) => {
+  const handleAmenityChange = (category: string, value: string) => {
     const amenities = value.split(',').map(a => a.trim()).filter(Boolean);
     
     switch (category) {
-      case 'interiorAmenities':
+      case 'interior':
         setFormData(prev => ({
           ...prev,
-          interiorAmenities: amenities.filter(a => INTERIOR_AMENITIES.includes(a as typeof INTERIOR_AMENITIES[number])) as typeof INTERIOR_AMENITIES[number][]
+          amenities: {
+            ...prev.amenities,
+            interior: amenities.filter(a => INTERIOR_AMENITIES.includes(a as typeof INTERIOR_AMENITIES[number])) as typeof INTERIOR_AMENITIES[number][]
+          }
         }));
         break;
-      case 'bathroomAmenities':
+      case 'bathroom':
         setFormData(prev => ({
           ...prev,
-          bathroomAmenities: amenities.filter(a => BATHROOM_AMENITIES.includes(a as typeof BATHROOM_AMENITIES[number])) as typeof BATHROOM_AMENITIES[number][]
+          amenities: {
+            ...prev.amenities,
+            bathroom: amenities.filter(a => BATHROOM_AMENITIES.includes(a as typeof BATHROOM_AMENITIES[number])) as typeof BATHROOM_AMENITIES[number][]
+          }
         }));
         break;
-      case 'kitchenAmenities':
+      case 'kitchen':
         setFormData(prev => ({
           ...prev,
-          kitchenAmenities: amenities.filter(a => KITCHEN_AMENITIES.includes(a as typeof KITCHEN_AMENITIES[number])) as typeof KITCHEN_AMENITIES[number][]
+          amenities: {
+            ...prev.amenities,
+            kitchen: amenities.filter(a => KITCHEN_AMENITIES.includes(a as typeof KITCHEN_AMENITIES[number])) as typeof KITCHEN_AMENITIES[number][]
+          }
         }));
         break;
-      case 'buildingAmenities':
+      case 'building':
         setFormData(prev => ({
           ...prev,
-          buildingAmenities: amenities.filter(a => BUILDING_AMENITIES.includes(a as typeof BUILDING_AMENITIES[number])) as typeof BUILDING_AMENITIES[number][]
+          amenities: {
+            ...prev.amenities,
+            building: amenities.filter(a => BUILDING_AMENITIES.includes(a as typeof BUILDING_AMENITIES[number])) as typeof BUILDING_AMENITIES[number][]
+          }
         }));
         break;
-      case 'utilityAmenities':
+      case 'utility':
         setFormData(prev => ({
           ...prev,
-          utilityAmenities: amenities.filter(a => UTILITY_AMENITIES.includes(a as typeof UTILITY_AMENITIES[number])) as typeof UTILITY_AMENITIES[number][]
+          amenities: {
+            ...prev.amenities,
+            utility: amenities.filter(a => UTILITY_AMENITIES.includes(a as typeof UTILITY_AMENITIES[number])) as typeof UTILITY_AMENITIES[number][]
+          }
         }));
         break;
-      case 'securityAmenities':
+      case 'security':
         setFormData(prev => ({
           ...prev,
-          securityAmenities: amenities.filter(a => SECURITY_AMENITIES.includes(a as typeof SECURITY_AMENITIES[number])) as typeof SECURITY_AMENITIES[number][]
+          amenities: {
+            ...prev.amenities,
+            security: amenities.filter(a => SECURITY_AMENITIES.includes(a as typeof SECURITY_AMENITIES[number])) as typeof SECURITY_AMENITIES[number][]
+          }
         }));
         break;
-      case 'locationFeatures':
+      case 'location':
         setFormData(prev => ({
           ...prev,
-          locationFeatures: amenities.filter(a => LOCATION_FEATURES.includes(a as typeof LOCATION_FEATURES[number])) as typeof LOCATION_FEATURES[number][]
+          amenities: {
+            ...prev.amenities,
+            location: amenities.filter(a => LOCATION_FEATURES.includes(a as typeof LOCATION_FEATURES[number])) as typeof LOCATION_FEATURES[number][]
+          }
         }));
         break;
     }
@@ -293,14 +313,14 @@ export default function PropertiesPage() {
                 <h2 className="text-xl font-semibold mb-2">{property.title}</h2>
                 <div className="flex items-center gap-2 text-gray-600 mb-2">
                   <FontAwesomeIcon icon={faMapMarkerAlt} />
-                  <span>{property.location}</span>
+                  <span>{property.prefecture} {property.city}</span>
                 </div>
                 <div className="flex justify-between items-center mb-4">
                   <div className="text-[#df2bb3] font-bold text-lg">
                     ¥{property.price.toLocaleString()}
                   </div>
                   <div className="text-gray-600 text-sm">
-                    ${property.priceUSD.toLocaleString()} USD
+                    ${property.priceUSD?.toLocaleString() || 0} USD
                   </div>
                 </div>
                 <div className="flex justify-between items-center">
@@ -341,8 +361,8 @@ export default function PropertiesPage() {
                   <input 
                     type="text"
                     className="form-control"
-                    name="listingId"
-                    value={selectedProperty?.listingId || formData.listingId}
+                    name="id"
+                    value={selectedProperty?.id || formData.id}
                     onChange={handleInputChange}
                     required
                   />
@@ -430,12 +450,12 @@ export default function PropertiesPage() {
 
                 <div className="row mb-3">
                   <div className="col-md-6">
-                    <label className="form-label">Location</label>
+                    <label className="form-label">Prefecture</label>
                     <input 
                       type="text"
                       className="form-control"
-                      name="location"
-                      value={selectedProperty?.location || formData.location}
+                      name="prefecture"
+                      value={selectedProperty?.prefecture || formData.prefecture}
                       onChange={handleInputChange}
                       required
                     />
@@ -455,12 +475,12 @@ export default function PropertiesPage() {
 
                 <div className="row mb-3">
                   <div className="col-md-6">
-                    <label className="form-label">Nearest Base</label>
+                    <label className="form-label">Nearest Bases</label>
                     <input 
                       type="text"
                       className="form-control"
-                      name="nearestBase"
-                      value={selectedProperty?.nearestBase || formData.nearestBase}
+                      name="nearbyBases"
+                      value={selectedProperty?.nearbyBases?.join(', ') || formData.nearbyBases?.join(', ') || ''}
                       onChange={handleInputChange}
                       required
                     />
@@ -485,13 +505,13 @@ export default function PropertiesPage() {
                   <input 
                     type="text"
                     className="form-control"
-                    name="interiorAmenities"
+                    name="interior"
                     value={
-                      selectedProperty?.interiorAmenities?.join(', ') || 
-                      formData.interiorAmenities?.join(', ') || 
+                      selectedProperty?.amenities?.interior?.join(', ') || 
+                      formData.amenities?.interior?.join(', ') || 
                       ''
                     }
-                    onChange={(e) => handleAmenityChange('interiorAmenities', e.target.value)}
+                    onChange={(e) => handleAmenityChange('interior', e.target.value)}
                     placeholder="Separate with commas"
                   />
                 </div>
@@ -501,13 +521,13 @@ export default function PropertiesPage() {
                   <input 
                     type="text"
                     className="form-control"
-                    name="bathroomAmenities"
+                    name="bathroom"
                     value={
-                      selectedProperty?.bathroomAmenities?.join(', ') || 
-                      formData.bathroomAmenities?.join(', ') || 
+                      selectedProperty?.amenities?.bathroom?.join(', ') || 
+                      formData.amenities?.bathroom?.join(', ') || 
                       ''
                     }
-                    onChange={(e) => handleAmenityChange('bathroomAmenities', e.target.value)}
+                    onChange={(e) => handleAmenityChange('bathroom', e.target.value)}
                     placeholder="Separate with commas"
                   />
                 </div>
@@ -517,13 +537,13 @@ export default function PropertiesPage() {
                   <input 
                     type="text"
                     className="form-control"
-                    name="kitchenAmenities"
+                    name="kitchen"
                     value={
-                      selectedProperty?.kitchenAmenities?.join(', ') || 
-                      formData.kitchenAmenities?.join(', ') || 
+                      selectedProperty?.amenities?.kitchen?.join(', ') || 
+                      formData.amenities?.kitchen?.join(', ') || 
                       ''
                     }
-                    onChange={(e) => handleAmenityChange('kitchenAmenities', e.target.value)}
+                    onChange={(e) => handleAmenityChange('kitchen', e.target.value)}
                     placeholder="Separate with commas"
                   />
                 </div>
@@ -533,13 +553,13 @@ export default function PropertiesPage() {
                   <input 
                     type="text"
                     className="form-control"
-                    name="buildingAmenities"
+                    name="building"
                     value={
-                      selectedProperty?.buildingAmenities?.join(', ') || 
-                      formData.buildingAmenities?.join(', ') || 
+                      selectedProperty?.amenities?.building?.join(', ') || 
+                      formData.amenities?.building?.join(', ') || 
                       ''
                     }
-                    onChange={(e) => handleAmenityChange('buildingAmenities', e.target.value)}
+                    onChange={(e) => handleAmenityChange('building', e.target.value)}
                     placeholder="Separate with commas"
                   />
                 </div>
@@ -549,13 +569,13 @@ export default function PropertiesPage() {
                   <input 
                     type="text"
                     className="form-control"
-                    name="utilityAmenities"
+                    name="utility"
                     value={
-                      selectedProperty?.utilityAmenities?.join(', ') || 
-                      formData.utilityAmenities?.join(', ') || 
+                      selectedProperty?.amenities?.utility?.join(', ') || 
+                      formData.amenities?.utility?.join(', ') || 
                       ''
                     }
-                    onChange={(e) => handleAmenityChange('utilityAmenities', e.target.value)}
+                    onChange={(e) => handleAmenityChange('utility', e.target.value)}
                     placeholder="Separate with commas"
                   />
                 </div>
@@ -565,13 +585,13 @@ export default function PropertiesPage() {
                   <input 
                     type="text"
                     className="form-control"
-                    name="securityAmenities"
+                    name="security"
                     value={
-                      selectedProperty?.securityAmenities?.join(', ') || 
-                      formData.securityAmenities?.join(', ') || 
+                      selectedProperty?.amenities?.security?.join(', ') || 
+                      formData.amenities?.security?.join(', ') || 
                       ''
                     }
-                    onChange={(e) => handleAmenityChange('securityAmenities', e.target.value)}
+                    onChange={(e) => handleAmenityChange('security', e.target.value)}
                     placeholder="Separate with commas"
                   />
                 </div>
@@ -581,15 +601,65 @@ export default function PropertiesPage() {
                   <input 
                     type="text"
                     className="form-control"
-                    name="locationFeatures"
+                    name="location"
                     value={
-                      selectedProperty?.locationFeatures?.join(', ') || 
-                      formData.locationFeatures?.join(', ') || 
+                      selectedProperty?.amenities?.location?.join(', ') || 
+                      formData.amenities?.location?.join(', ') || 
                       ''
                     }
-                    onChange={(e) => handleAmenityChange('locationFeatures', e.target.value)}
+                    onChange={(e) => handleAmenityChange('location', e.target.value)}
                     placeholder="Separate with commas"
                   />
+                </div>
+
+                <div className="row mb-3">
+                  <div className="col-md-6">
+                    <label className="form-label">Security Deposit</label>
+                    <input 
+                      type="number"
+                      className="form-control"
+                      name="securityDeposit"
+                      value={selectedProperty?.securityDeposit || formData.securityDeposit}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <label className="form-label">Key Money</label>
+                    <input 
+                      type="number"
+                      className="form-control"
+                      name="keyMoney"
+                      value={selectedProperty?.keyMoney || formData.keyMoney}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="row mb-3">
+                  <div className="col-md-6">
+                    <label className="form-label">Agency Fee</label>
+                    <input 
+                      type="number"
+                      className="form-control"
+                      name="agencyFee"
+                      value={selectedProperty?.agencyFee || formData.agencyFee}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <label className="form-label">Guarantor Fee</label>
+                    <input 
+                      type="number"
+                      className="form-control"
+                      name="guarantorFee"
+                      value={selectedProperty?.guarantorFee || formData.guarantorFee}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
                 </div>
 
                 <div className="flex justify-end gap-4 mt-6">

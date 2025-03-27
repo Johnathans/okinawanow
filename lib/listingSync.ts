@@ -31,7 +31,7 @@ export async function syncListingWithProperty(
 
     // Find the corresponding property
     const listingsRef = collection(db, 'listings');
-    const q = query(listingsRef, where('id', '==', listingData.listingId));
+    const q = query(listingsRef, where('id', '==', listingData.id));
     const propertySnapshot = await getDocs(q);
 
     if (propertySnapshot.empty) {
@@ -116,7 +116,7 @@ export const syncListing = async (listingData: Listing) => {
   try {
     // Find the corresponding listing
     const listingsRef = collection(db, 'listings');
-    const q = query(listingsRef, where('id', '==', listingData.listingId));
+    const q = query(listingsRef, where('id', '==', listingData.id));
     const listingSnapshot = await getDocs(q);
 
     if (listingSnapshot.empty) {

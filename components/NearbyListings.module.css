@@ -1,0 +1,125 @@
+.nearbyListings {
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 1rem;
+  color: var(--dark-grey);
+}
+
+.listingsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.listingCard {
+  display: block;
+  background-color: var(--white);
+  border: 1px solid var(--light-grey);
+  border-radius: var(--border-radius-sm);
+  overflow: hidden;
+  transition: var(--transition);
+  text-decoration: none;
+}
+
+.listingCard:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.imageContainer {
+  position: relative;
+  height: 120px;
+  background-color: var(--light-grey);
+}
+
+.image {
+  object-fit: cover;
+}
+
+.price {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.content {
+  padding: 0.75rem;
+}
+
+.listingTitle {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0 0 0.25rem;
+  color: var(--dark-grey);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.location {
+  font-size: 0.8rem;
+  color: var(--medium-grey);
+  margin: 0 0 0.5rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.details {
+  display: flex;
+  gap: 0.75rem;
+  font-size: 0.75rem;
+  color: var(--medium-grey);
+}
+
+.details span {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.details i {
+  color: var(--primary-pink);
+  font-size: 0.7rem;
+}
+
+.viewMore {
+  margin-top: 1rem;
+  text-align: right;
+}
+
+.viewMoreLink {
+  font-size: 0.85rem;
+  color: var(--primary-pink);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: var(--transition);
+}
+
+.viewMoreLink:hover {
+  color: var(--dark-pink);
+}
+
+.loading {
+  padding: 1rem;
+  text-align: center;
+  color: var(--medium-grey);
+  font-size: 0.9rem;
+}
+
+@media (min-width: 768px) {
+  .listingsGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

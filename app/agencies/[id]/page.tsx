@@ -40,7 +40,10 @@ export default function AgencyProfilePage() {
             case "bedrooms":
                 return b.bedrooms - a.bedrooms;
             default:
-                return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+                // Handle cases where createdAt might be undefined
+                const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+                const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+                return dateB - dateA;
         }
     });
 

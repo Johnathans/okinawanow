@@ -1,0 +1,106 @@
+.agencyCard {
+  background-color: var(--white);
+  border: 1px solid var(--light-grey);
+  border-radius: var(--border-radius-sm);
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.agencyHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.logoContainer {
+  flex-shrink: 0;
+}
+
+.logo {
+  border-radius: var(--border-radius-sm);
+  object-fit: cover;
+}
+
+.defaultLogo {
+  width: 60px;
+  height: 60px;
+  border-radius: var(--border-radius-sm);
+  background-color: var(--light-grey);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--medium-grey);
+  font-size: 1.5rem;
+}
+
+.agencyName {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--dark-grey);
+}
+
+.agencyDescription {
+  font-size: 0.9rem;
+  color: var(--medium-grey);
+  margin: 0.25rem 0 0;
+}
+
+.contactInfo {
+  margin-bottom: 1rem;
+}
+
+.contactItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.contactItem i {
+  color: var(--primary-pink);
+  width: 1rem;
+  text-align: center;
+}
+
+.contactItem a {
+  color: var(--medium-grey);
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.contactItem a:hover {
+  color: var(--primary-pink);
+}
+
+.actions {
+  margin-top: 1rem;
+}
+
+.contactButton {
+  display: inline-block;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background-color: var(--white);
+  color: var(--primary-pink);
+  border: 1px solid var(--primary-pink);
+  border-radius: var(--border-radius-sm);
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-align: center;
+  transition: var(--transition);
+}
+
+.contactButton:hover {
+  background-color: var(--light-pink);
+  transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+  .agencyHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

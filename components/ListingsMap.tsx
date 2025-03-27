@@ -52,7 +52,7 @@ export default function ListingsMap({ listings, onListingClick, className = '', 
 
         // Add markers for each listing
         listings.forEach(listing => {
-          const fullAddress = `${listing.location}, Okinawa, Japan`;
+          const fullAddress = `${listing.prefecture}, ${listing.city}, Okinawa, Japan`;
           geocoder.geocode({ address: fullAddress }, (results, status) => {
             if (status === 'OK' && results && results[0]) {
               const position = results[0].geometry.location;
@@ -83,7 +83,7 @@ export default function ListingsMap({ listings, onListingClick, className = '', 
                   <div style="max-width: 200px;">
                     <h6 style="margin: 0 0 8px;">${listing.title}</h6>
                     <p style="margin: 0 0 8px;">¥${listing.price.toLocaleString()}</p>
-                    <p style="margin: 0;">${listing.bedrooms} BR · ${listing.bathrooms} Bath · ${listing.floorArea}m²</p>
+                    <p style="margin: 0;">${listing.bedrooms} BR · ${listing.bathrooms} Bath · ${listing.squareMeters}m²</p>
                   </div>
                 `
               });

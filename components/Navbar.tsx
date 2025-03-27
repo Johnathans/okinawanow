@@ -6,31 +6,38 @@ import { useAuth } from '@/contexts/AuthContext';
 import { usePathname } from 'next/navigation';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { 
-    faHouseLaptop,
-    faMapLocationDot,
-    faCircleInfo,
-    faHeart,
-    faBars,
-    faXmark,
-    faSearch,
-    faBuilding,
-    faHouse,
-    faCity,
-    faLocationDot,
-    faInfoCircle,
-    faQuestionCircle,
-    faPhone,
-    faCalendarAlt,
-    faSignOut,
+  faHouseLaptop,
+  faHeart,
+  faBars,
+  faXmark,
+  faSearch,
+  faBuilding,
+  faHouse,
+  faCity,
+  faLocationDot,
+  faInfoCircle,
+  faQuestionCircle,
+  faPhone,
+  faCalendarAlt,
+  faSignOut,
+  faCompass,
+  faShieldAlt,
+  faMoneyBillWave,
+  faTachometerAlt,
+  faChevronDown
 } from "@fortawesome/free-solid-svg-icons";
+import { faUserCircle } from '@fortawesome/free-regular-svg-icons';
 import AuthModal from './AuthModal';
+import { cities } from '@/data/cities';
+import { bases } from '@/data/bases';
 
 export default function Navbar() {
   const { user, loading, signOut } = useAuth();
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
   const [showAuthModal, setShowAuthModal] = React.useState(false);
-  const isListingsPage = pathname.startsWith('/listings');
+  const isListingsPage = pathname === '/listings' || pathname.startsWith('/listings?');
+  const isAdmin = user?.email?.toLowerCase() === 'smithjohnathanr@gmail.com';
 
   const handleSignOut = () => {
     signOut();
@@ -38,7 +45,7 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="navbar navbar-expand-lg bg-white border-bottom sticky-top">
+      <nav className="navbar navbar-expand-lg bg-white border-bottom sticky-top shadow-sm">
         <div className={`${isListingsPage ? 'container-fluid px-4' : 'container'}`}>
           <Link href="/" className="d-flex align-items-center text-decoration-none">
             <div className="d-flex align-items-center">
@@ -75,162 +82,234 @@ export default function Navbar() {
             type="button"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
-            <FontAwesomeIcon icon={isMobileMenuOpen ? faXmark : faBars} className="text-pink" />
+            <FontAwesomeIcon icon={isMobileMenuOpen ? faXmark : faBars} style={{ color: 'var(--primary-pink)' }} />
           </button>
 
-          <div className={`collapse navbar-collapse ${isMobileMenuOpen ? 'show' : ''}`} style={{ position: 'static' }}>
-            <ul className="navbar-nav ms-auto">
-              <li className="nav-item dropdown" style={{ position: 'static' }}>
+          <div className={`collapse navbar-collapse ${isMobileMenuOpen ? 'show' : ''}`}>
+            <ul className="navbar-nav ms-auto align-items-center">
+              {/* Properties Dropdown */}
+              <li className="nav-item dropdown position-static">
                 <Link 
                   href="/listings" 
-                  className={`nav-link dropdown-toggle ${pathname === '/listings' ? 'active fw-bold' : ''}`}
+                  className="nav-link dropdown-toggle text-dark d-flex align-items-center"
                   role="button"
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
-                  <FontAwesomeIcon icon={faHouseLaptop} className="me-2" />
-                  Listings
+                  Search by Location
+                  <FontAwesomeIcon icon={faChevronDown} className="ms-1 nav-dropdown-icon" />
                 </Link>
-                <div className="dropdown-menu mega-menu p-4" style={{ position: 'fixed', top: '60px', left: 0, right: 0, zIndex: 1040 }}>
+                <div className="dropdown-menu mega-menu w-100 p-3 border-0 shadow-lg" style={{ marginTop: '0' }}>
                   <div className="container">
                     <div className="row g-4">
-                      <div className="col-lg-4">
-                        <h6 className="text-pink fw-bold mb-3">Property Types</h6>
+                      {/* Property Types Column */}
+                      <div className="col-lg-3">
+                        <h6 className="fw-bold" style={{ color: 'var(--primary-pink)' }}>Property Types</h6>
                         <div className="d-flex flex-column gap-2">
-                          <Link href="/listings?type=apartment" className="text-decoration-none text-muted">
+                          <Link href="/listings" className="dropdown-item rounded-2 px-3 py-2 text-dark">
+                            <FontAwesomeIcon icon={faSearch} className="me-2" />
+                            All Properties
+                          </Link>
+                          <Link href="/listings?type=apartment" className="dropdown-item rounded-2 px-3 py-2 text-dark">
                             <FontAwesomeIcon icon={faBuilding} className="me-2" />
                             Apartments
                           </Link>
-                          <Link href="/listings?type=house" className="text-decoration-none text-muted">
+                          <Link href="/listings?type=house" className="dropdown-item rounded-2 px-3 py-2 text-dark">
                             <FontAwesomeIcon icon={faHouse} className="me-2" />
                             Houses
                           </Link>
-                          <Link href="/listings?type=mansion" className="text-decoration-none text-muted">
+                          <Link href="/listings?type=mansion" className="dropdown-item rounded-2 px-3 py-2 text-dark">
                             <FontAwesomeIcon icon={faCity} className="me-2" />
                             Mansions
                           </Link>
-                        </div>
-                      </div>
-                      <div className="col-lg-4">
-                        <h6 className="text-pink fw-bold mb-3">Popular Areas</h6>
-                        <div className="d-flex flex-column gap-2">
-                          <Link href="/listings?area=kadena" className="text-decoration-none text-muted">
-                            <FontAwesomeIcon icon={faLocationDot} className="me-2" />
-                            Kadena
-                          </Link>
-                          <Link href="/listings?area=foster" className="text-decoration-none text-muted">
-                            <FontAwesomeIcon icon={faLocationDot} className="me-2" />
-                            Foster
-                          </Link>
-                          <Link href="/listings?area=american_village" className="text-decoration-none text-muted">
-                            <FontAwesomeIcon icon={faLocationDot} className="me-2" />
-                            American Village
-                          </Link>
-                        </div>
-                      </div>
-                      <div className="col-lg-4">
-                        <h6 className="text-pink fw-bold mb-3">Quick Links</h6>
-                        <div className="d-flex flex-column gap-2">
-                          <Link href="/listings/search" className="text-decoration-none text-muted">
+                          <div className="dropdown-divider my-2"></div>
+                          <Link href="/listings/search" className="dropdown-item rounded-2 px-3 py-2 text-dark">
                             <FontAwesomeIcon icon={faSearch} className="me-2" />
                             Advanced Search
                           </Link>
-                          <Link href="/listings/featured" className="text-decoration-none text-muted">
+                          <Link href="/listings/featured" className="dropdown-item rounded-2 px-3 py-2 text-dark">
                             <FontAwesomeIcon icon={faHeart} className="me-2" />
                             Featured Listings
                           </Link>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                </div>
-              </li>
-              <li className="nav-item">
-                <Link 
-                  href="/map" 
-                  className={`nav-link ${pathname === '/map' ? 'active fw-bold' : ''}`}
-                >
-                  <FontAwesomeIcon icon={faMapLocationDot} className="me-2" />
-                  Map
-                </Link>
-              </li>
-              <li className="nav-item dropdown">
-                <Link 
-                  href="/about" 
-                  className={`nav-link dropdown-toggle ${pathname === '/about' ? 'active fw-bold' : ''}`}
-                  role="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  <FontAwesomeIcon icon={faCircleInfo} className="me-2" />
-                  About
-                </Link>
-                <div className="dropdown-menu p-4">
-                  <div className="row g-4">
-                    <div className="col-12">
-                      <div className="d-flex flex-column gap-2">
-                        <Link href="/about" className="text-decoration-none text-muted">
-                          <FontAwesomeIcon icon={faInfoCircle} className="me-2" />
-                          About Us
-                        </Link>
-                        <Link href="/faq" className="text-decoration-none text-muted">
-                          <FontAwesomeIcon icon={faQuestionCircle} className="me-2" />
-                          FAQ
-                        </Link>
-                        <Link href="/contact" className="text-decoration-none text-muted">
-                          <FontAwesomeIcon icon={faPhone} className="me-2" />
-                          Contact
-                        </Link>
+                      
+                      {/* Cities Column */}
+                      <div className="col-lg-5">
+                        <h6 className="fw-bold" style={{ color: 'var(--primary-pink)' }}>Cities</h6>
+                        <div className="row">
+                          <div className="col-6">
+                            {cities.slice(0, Math.ceil(cities.length / 2)).map(city => (
+                              <Link 
+                                key={city.id} 
+                                href={`/cities/${city.id}`} 
+                                className="dropdown-item rounded-2 px-3 py-2 text-dark"
+                              >
+                                <FontAwesomeIcon icon={faLocationDot} className="me-2" />
+                                {city.name}
+                              </Link>
+                            ))}
+                          </div>
+                          <div className="col-6">
+                            {cities.slice(Math.ceil(cities.length / 2)).map(city => (
+                              <Link 
+                                key={city.id} 
+                                href={`/cities/${city.id}`} 
+                                className="dropdown-item rounded-2 px-3 py-2 text-dark"
+                              >
+                                <FontAwesomeIcon icon={faLocationDot} className="me-2" />
+                                {city.name}
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="mt-3">
+                          <Link href="/cities" className="dropdown-item rounded-2 px-3 py-2 text-dark fw-medium">
+                            <FontAwesomeIcon icon={faCompass} className="me-2" />
+                            View All City Guides
+                          </Link>
+                        </div>
+                      </div>
+                      
+                      {/* Bases Column */}
+                      <div className="col-lg-4">
+                        <h6 className="fw-bold" style={{ color: 'var(--primary-pink)' }}>Military Bases</h6>
+                        <div className="d-flex flex-column gap-2">
+                          {bases.map(base => (
+                            <Link 
+                              key={base.id} 
+                              href={`/bases/${base.id}`} 
+                              className="dropdown-item rounded-2 px-3 py-2 text-dark"
+                            >
+                              <FontAwesomeIcon icon={faShieldAlt} className="me-2" />
+                              {base.name}
+                            </Link>
+                          ))}
+                          <div className="dropdown-divider my-2"></div>
+                          <Link href="/bases" className="dropdown-item rounded-2 px-3 py-2 text-dark fw-medium">
+                            <FontAwesomeIcon icon={faCompass} className="me-2" />
+                            View All Base Guides
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </li>
+
+              {/* Resources Dropdown */}
+              <li className="nav-item dropdown">
+                <Link 
+                  href="/resources" 
+                  className="nav-link dropdown-toggle text-dark d-flex align-items-center"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  Moving Resources
+                  <FontAwesomeIcon icon={faChevronDown} className="ms-1 nav-dropdown-icon" />
+                </Link>
+                <div className="dropdown-menu dropdown-menu-lg p-0 border-0 shadow-lg rounded-3 overflow-hidden" style={{ width: '280px' }}>
+                  <div className="p-3 bg-light border-bottom">
+                    <h6 className="mb-0 fw-bold" style={{ color: 'var(--primary-pink)' }}>Resources</h6>
+                  </div>
+                  <div className="p-3">
+                    <div className="d-flex flex-column gap-2">
+                      <Link href="/guides" className="dropdown-item rounded-2 px-3 py-2 text-dark">
+                        <FontAwesomeIcon icon={faCompass} className="me-2" />
+                        City Guides
+                      </Link>
+                      <Link href="/moving-tips" className="dropdown-item rounded-2 px-3 py-2 text-dark">
+                        <FontAwesomeIcon icon={faHouse} className="me-2" />
+                        Moving Tips
+                      </Link>
+                      <Link href="/cost-of-living" className="dropdown-item rounded-2 px-3 py-2 text-dark">
+                        <FontAwesomeIcon icon={faMoneyBillWave} className="me-2" />
+                        Cost of Living
+                      </Link>
+                      <div className="dropdown-divider my-2"></div>
+                      <Link href="/about" className="dropdown-item rounded-2 px-3 py-2 text-dark">
+                        <FontAwesomeIcon icon={faInfoCircle} className="me-2" />
+                        About OkinawaNow
+                      </Link>
+                      <Link href="/faq" className="dropdown-item rounded-2 px-3 py-2 text-dark">
+                        <FontAwesomeIcon icon={faQuestionCircle} className="me-2" />
+                        FAQ
+                      </Link>
+                      <Link href="/contact" className="dropdown-item rounded-2 px-3 py-2 text-dark">
+                        <FontAwesomeIcon icon={faPhone} className="me-2" />
+                        Contact Us
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              
+              {/* Our Services Link */}
+              <li className="nav-item">
+                <Link href="/services" className="nav-link text-dark">
+                  Our Services
+                </Link>
+              </li>
+
+              {/* User Menu */}
               {user ? (
-                <div className="dropdown">
-                  <button
-                    className="btn btn-link text-dark text-decoration-none dropdown-toggle"
-                    type="button"
+                <li className="nav-item dropdown ms-2">
+                  <button 
+                    className="btn profile-button rounded-pill d-flex align-items-center"
+                    role="button"
                     data-bs-toggle="dropdown"
                     aria-expanded="false"
+                    style={{ padding: '0.4rem 1rem' }}
                   >
-                    {user.displayName || 'Menu'}
+                    <FontAwesomeIcon icon={faUserCircle} className="me-2" />
+                    <span className="d-none d-md-inline">{user.displayName || 'Account'}</span>
+                    <FontAwesomeIcon icon={faChevronDown} className="ms-1 nav-dropdown-icon" />
                   </button>
-                  <ul className="dropdown-menu dropdown-menu-end">
-                    <li>
-                      <Link href="/favorites" className="dropdown-item">
+                  <ul className="dropdown-menu dropdown-menu-end p-0 border-0 shadow-lg rounded-3 overflow-hidden" style={{ width: '250px' }}>
+                    <div className="p-3 bg-light border-bottom">
+                      <h6 className="mb-0 fw-bold" style={{ color: 'var(--primary-pink)' }}>My Account</h6>
+                    </div>
+                    <div className="p-2">
+                      <Link href="/favorites" className="dropdown-item rounded-2 px-3 py-2 text-dark">
                         <FontAwesomeIcon icon={faHeart} className="me-2" />
                         My Favorites
                       </Link>
-                    </li>
-                    <li>
-                      <Link href="/tours" className="dropdown-item">
+                      <Link href="/tours" className="dropdown-item rounded-2 px-3 py-2 text-dark">
                         <FontAwesomeIcon icon={faCalendarAlt} className="me-2" />
                         My Tours
                       </Link>
-                    </li>
-                    <li><hr className="dropdown-divider" /></li>
-                    <li>
-                      <button className="dropdown-item" onClick={handleSignOut}>
+                      
+                      {isAdmin && (
+                        <>
+                          <div className="dropdown-divider my-2"></div>
+                          <Link href="/admin" className="dropdown-item rounded-2 px-3 py-2 text-dark">
+                            <FontAwesomeIcon icon={faTachometerAlt} className="me-2" />
+                            Admin Dashboard
+                          </Link>
+                        </>
+                      )}
+                      
+                      <div className="dropdown-divider my-2"></div>
+                      <button className="dropdown-item rounded-2 px-3 py-2 text-dark" onClick={handleSignOut}>
                         <FontAwesomeIcon icon={faSignOut} className="me-2" />
                         Sign Out
                       </button>
-                    </li>
+                    </div>
                   </ul>
-                </div>
+                </li>
               ) : (
-                <div className="d-flex align-items-center">
+                <li className="nav-item ms-2">
                   {!loading && (
-                    <>
-                      <button 
-                        onClick={() => setShowAuthModal(true)}
-                        className="btn btn-primary"
-                      >
-                        Sign In
-                      </button>
-                    </>
+                    <button 
+                      onClick={() => setShowAuthModal(true)}
+                      className="btn rounded-pill"
+                      style={{ backgroundColor: 'var(--primary-pink)', color: 'white' }}
+                    >
+                      Sign In
+                    </button>
                   )}
-                </div>
+                </li>
               )}
             </ul>
           </div>

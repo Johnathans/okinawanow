@@ -7,11 +7,6 @@ def run_command(command):
     output, error = process.communicate()
     return output.decode('utf-8') if output else ''
 
-# Sensitive data patterns to replace
-patterns = {
-    'AIzaSyBPPdXNml2dUiyndMwEbb8zO7PpBurHK3E': '***REMOVED***',
-}
-
 # Create a temporary branch
 print("Creating temporary branch...")
 run_command('git checkout --orphan temp_branch')

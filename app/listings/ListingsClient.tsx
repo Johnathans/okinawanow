@@ -25,14 +25,15 @@ export default function ListingsClient() {
   const [hoveredListing, setHoveredListing] = useState<string | null>(null);
   const searchParams = useSearchParams();
   const { user } = useAuth();
-  const { favorites, toggleFavorite } = useFavorites({ userId: user?.uid || '' });
+  const userId = user?.uid || '';
+  const { favorites, toggleFavorite } = useFavorites({ userId });
   const router = useRouter();
 
   // Get current filter values
   const location = searchParams.get('location')?.toLowerCase() as Location | undefined;
   const currentCity = searchParams.get('city')?.toLowerCase() as Location | undefined;
   const currentBase = searchParams.get('base')?.toLowerCase() as Location | undefined;
-  const currentType = searchParams.get('propertyType')?.toLowerCase() || '';
+  const currentType = searchParams.get('propertyType')?.toLowerCase() || searchParams.get('listingType')?.toLowerCase() || '';
 
   const getListingsHeader = () => {
     const propertyTypeText = currentType ? 
@@ -94,18 +95,33 @@ export default function ListingsClient() {
           }
         }
         if (currentType) {
-          q = query(q, where('propertyType', '==', currentType));
+          q = query(q, or(
+            where('listingType', '==', currentType),
+            where('propertyType', '==', currentType)
+          ));
         }
         if (searchParams.get('price')) {
           const [min, max] = searchParams.get('price')!.split('-').map(Number);
           if (min) q = query(q, where('price', '>=', min));
           if (max) q = query(q, where('price', '<=', max));
         }
-        if (searchParams.get('beds')) {
-          q = query(q, where('beds', '>=', parseInt(searchParams.get('beds')!)));
+        if (searchParams.get('beds') || searchParams.get('bedrooms')) {
+          const beds = parseInt(searchParams.get('beds') || searchParams.get('bedrooms') || '0');
+          if (beds > 0) {
+            q = query(q, or(
+              where('bedrooms', '>=', beds),
+              where('beds', '>=', beds)
+            ));
+          }
         }
-        if (searchParams.get('baths')) {
-          q = query(q, where('baths', '>=', parseInt(searchParams.get('baths')!)));
+        if (searchParams.get('baths') || searchParams.get('bathrooms')) {
+          const baths = parseInt(searchParams.get('baths') || searchParams.get('bathrooms') || '0');
+          if (baths > 0) {
+            q = query(q, or(
+              where('bathrooms', '>=', baths),
+              where('baths', '>=', baths)
+            ));
+          }
         }
 
         const snapshot = await getDocs(q);

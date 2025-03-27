@@ -6,12 +6,15 @@ import { auth, db } from '@/lib/firebase';
 import { 
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword, 
-  AuthError
+  AuthError,
+  GoogleAuthProvider,
+  signInWithPopup
 } from 'firebase/auth';
 import { FirebaseError } from 'firebase/app';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
+import Link from 'next/link';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -19,6 +22,49 @@ export default function LoginPage() {
   const [password, setPassword] = React.useState('');
   const [error, setError] = React.useState('');
   const [loading, setLoading] = React.useState(false);
+
+  const handleGoogleSignIn = async () => {
+    setLoading(true);
+    setError('');
+
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      console.log('Google sign in successful:', user.email);
+
+      // Special case for admin email - always redirect to admin
+      if (user.email?.toLowerCase() === 'smithjohnathanr@gmail.com') {
+        console.log('Admin email detected, redirecting to admin dashboard');
+        router.push('/admin');
+        return;
+      }
+
+      // For other users, check their role
+      const userRef = doc(db, 'users', user.uid);
+      const userDoc = await getDoc(userRef);
+      
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        if (userData.role === 'admin') {
+          router.push('/admin');
+        } else if (userData.role === 'agency') {
+          router.push('/agency-dashboard/properties');
+        } else {
+          router.push('/'); // Regular users go to homepage
+        }
+      } else {
+        // Default to agency dashboard if no user document exists
+        router.push('/agency-dashboard/properties');
+      }
+    } catch (error) {
+      console.error('Google sign in error:', error);
+      const firebaseError = error as FirebaseError;
+      setError(firebaseError.message || 'Failed to sign in with Google');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -28,7 +74,42 @@ export default function LoginPage() {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       console.log('Logged in user:', userCredential.user.uid);
-      router.push('/agency-dashboard/properties');
+      
+      // Special case for admin email - always redirect to admin
+      if (email.toLowerCase() === 'smithjohnathanr@gmail.com') {
+        console.log('Admin email detected, redirecting to admin dashboard');
+        router.push('/admin');
+        return;
+      }
+      
+      // For other users, check their role and profile
+      const userRef = doc(db, 'users', userCredential.user.uid);
+      const userDoc = await getDoc(userRef);
+      
+      // Check if user has a profile
+      const userProfileRef = doc(db, 'userProfiles', userCredential.user.uid);
+      const userProfileSnap = await getDoc(userProfileRef);
+      
+      if (!userProfileSnap.exists()) {
+        // User doesn't have a profile, redirect to profile setup
+        router.push('/profile-setup');
+        return;
+      }
+      
+      // User has a profile, redirect based on role
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        if (userData.role === 'admin') {
+          router.push('/admin');
+        } else if (userData.role === 'agency') {
+          router.push('/agency-dashboard/properties');
+        } else {
+          router.push('/'); // Regular users go to homepage
+        }
+      } else {
+        // Default to homepage if no user document exists
+        router.push('/');
+      }
     } catch (error) {
       console.error('Login error:', error);
       const firebaseError = error as FirebaseError;
@@ -65,6 +146,17 @@ export default function LoginPage() {
       console.log('Creating agency doc:', agencyRef.path, 'with data:', agencyData);
       await setDoc(agencyRef, agencyData);
       console.log('Agency doc created successfully');
+      
+      // Set user role to agency
+      const userRef = doc(db, 'users', user.uid);
+      await setDoc(userRef, {
+        email: testEmail,
+        displayName: 'Test Agency',
+        role: 'agency',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      });
+      console.log('User role set to agency');
 
       // Auto-fill the form
       setEmail(testEmail);
@@ -151,6 +243,15 @@ export default function LoginPage() {
                     )}
                   </button>
 
+                  <button
+                    type="button"
+                    className="btn btn-outline-secondary w-100"
+                    onClick={handleGoogleSignIn}
+                    disabled={loading}
+                  >
+                    Sign in with Google
+                  </button>
+
                   {/* Development only - Create Test Agency button */}
                   {process.env.NODE_ENV === 'development' && (
                     <button
@@ -163,6 +264,12 @@ export default function LoginPage() {
                     </button>
                   )}
                 </form>
+
+                <div className="text-center mt-3">
+                  <p>
+                    Don't have an account? <Link href="/register" style={{ color: 'var(--primary-pink)' }}>Register</Link>
+                  </p>
+                </div>
               </div>
             </div>
           </div>

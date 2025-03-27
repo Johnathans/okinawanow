@@ -13,7 +13,9 @@ import {
     getDocs, 
     onSnapshot,
     orderBy,
-    limit 
+    limit,
+    doc,
+    getDoc
 } from "firebase/firestore";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { 
@@ -39,11 +41,19 @@ interface Property {
     title: string;
     location: string;
     price: number;
-    image: string;
     status: 'Active' | 'Pending' | 'Sold';
-    views: number;
-    inquiries: number;
-    lastUpdated: string;
+    type: string;
+    bedrooms?: number;
+    bathrooms?: number;
+    area?: number;
+    description?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    images?: string[];
+    image?: string;
+    views?: number;
+    inquiries?: number;
+    lastUpdated?: string;
 }
 
 interface TourRequest {
@@ -81,6 +91,8 @@ export default function AgencyDashboardPage() {
     const [tourRequests, setTourRequests] = useState<TourRequest[]>([]);
     const [inquiries, setInquiries] = useState<Inquiry[]>([]);
     const [activities, setActivities] = useState<Activity[]>([]);
+    const [isAdminImpersonating, setIsAdminImpersonating] = useState(false);
+    const [impersonatedAgencyId, setImpersonatedAgencyId] = useState<string | null>(null);
     const [stats, setStats] = useState({
         activeListings: 0,
         totalClients: 0,
@@ -92,7 +104,49 @@ export default function AgencyDashboardPage() {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
                 setUser(user);
-                fetchDashboardData(user.uid);
+                
+                // Check if admin is impersonating an agency
+                const adminAccessToken = sessionStorage.getItem('adminAccessToken');
+                const impersonatingAgency = sessionStorage.getItem('impersonatingAgency');
+                const testAgencyMode = sessionStorage.getItem('testAgencyMode');
+                
+                if (testAgencyMode === 'true') {
+                    console.log('Test agency mode detected');
+                    setIsAdminImpersonating(true);
+                    setImpersonatedAgencyId('test-agency-id');
+                    
+                    // Create dummy data for test agency
+                    setProperties([{
+                        id: 'test-property-1',
+                        title: 'Test Property 1',
+                        price: 150000,
+                        location: 'Chatan, Okinawa',
+                        bedrooms: 2,
+                        bathrooms: 1,
+                        area: 85,
+                        description: 'A test property for development',
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString(),
+                        status: 'Active',
+                        type: 'apartment',
+                        images: ['/images/properties/property-1.jpg']
+                    }]);
+                    
+                    setStats({
+                        activeListings: 1,
+                        totalClients: 3,
+                        newInquiries: 2,
+                        monthlyViews: 45
+                    });
+                    
+                    setLoading(false);
+                } else if (adminAccessToken && impersonatingAgency && user.email?.toLowerCase() === 'smithjohnathanr@gmail.com') {
+                    setIsAdminImpersonating(true);
+                    setImpersonatedAgencyId(impersonatingAgency);
+                    fetchDashboardData(impersonatingAgency);
+                } else {
+                    fetchDashboardData(user.uid);
+                }
             } else {
                 router.push('/login');
             }
@@ -104,6 +158,15 @@ export default function AgencyDashboardPage() {
 
     const fetchDashboardData = async (userId: string) => {
         try {
+            // Fetch agency details
+            const agencyRef = doc(db, 'agencies', userId);
+            const agencySnap = await getDoc(agencyRef);
+            
+            if (!agencySnap.exists()) {
+                console.error('Agency not found');
+                return;
+            }
+            
             // Fetch Properties
             const propertiesQuery = query(
                 collection(db, 'listings'),
@@ -249,9 +312,23 @@ export default function AgencyDashboardPage() {
                         </div>
                         <div>
                             <h1 className="h4 mb-0">Welcome Back, {user?.displayName || 'Agent'}</h1>
-                            <p className="text-muted small mb-0">
-                                Here's your property management overview
-                            </p>
+                            <p className="text-muted mb-0">Here's what's happening with your properties</p>
+                            {isAdminImpersonating && (
+                                <div className="mt-2 alert alert-warning py-1 px-2 mb-0" style={{ fontSize: '0.8rem' }}>
+                                    <strong>Admin Mode:</strong> You are viewing this agency's dashboard as an admin.
+                                    <button 
+                                        className="btn btn-sm btn-link p-0 ms-2"
+                                        onClick={() => {
+                                            sessionStorage.removeItem('adminAccessToken');
+                                            sessionStorage.removeItem('impersonatingAgency');
+                                            sessionStorage.removeItem('testAgencyMode');
+                                            router.push('/admin/agencies');
+                                        }}
+                                    >
+                                        Return to Admin
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -508,7 +585,7 @@ export default function AgencyDashboardPage() {
                                                             style={{ width: '120px', height: '90px', position: 'relative' }}
                                                         >
                                                             <Image
-                                                                src={property.image}
+                                                                src={property.image || property.images?.[0] || '/images/placeholder.jpg'}
                                                                 alt={property.title}
                                                                 fill
                                                                 style={{ objectFit: 'cover' }}

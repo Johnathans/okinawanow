@@ -29,9 +29,6 @@ const nextConfig = {
     includePaths: ['./node_modules'],
     prependData: `@import "~bootstrap/scss/functions";`
   },
-  env: {
-    FIREBASE_PROJECT_ID: process.env.FIREBASE_PROJECT_ID,
-  },
   webpack: (config) => {
     config.resolve.fallback = {
       ...config.resolve.fallback,

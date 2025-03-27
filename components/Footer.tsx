@@ -8,7 +8,7 @@ import { usePathname } from 'next/navigation';
 
 export default function Footer() {
   const pathname = usePathname();
-  const isListingsPage = pathname.startsWith('/listings');
+  const isListingsPage = pathname === '/listings' || pathname.startsWith('/listings?');
 
   return (
     <footer className="bg-white border-top py-5">

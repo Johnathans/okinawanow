@@ -1,7 +1,22 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faMapMarkerAlt,
-  faHome
+  faHome,
+  faHouseLaptop,
+  faBuilding,
+  faHouse,
+  faCity,
+  faLocationDot,
+  faPlane,
+  faShip,
+  faFighterJet,
+  faHelicopter,
+  faUsers,
+  faUserShield,
+  faMedal,
+  faKey,
+  faCoins,
+  faHandshake
 } from "@fortawesome/free-solid-svg-icons";
 import Image from 'next/image';
 import SearchBar from "@/components/SearchBar";
@@ -53,7 +68,22 @@ export default async function Home() {
           borderRadius: '0 0 40px 40px'
         }}
       >
-        <div className="container">
+        {/* Background Pattern */}
+        <div 
+          className="position-absolute" 
+          style={{
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundImage: 'radial-gradient(var(--primary-pink) 1px, transparent 1px)',
+            backgroundSize: '30px 30px',
+            opacity: 0.1,
+            zIndex: 0
+          }}
+        ></div>
+        
+        <div className="container position-relative" style={{ zIndex: 1 }}>
           <div className="text-center py-5">
             <h1 className="display-4 fw-black mb-4" style={{ color: 'var(--dark-grey)', fontWeight: 900 }}>
               Find your home in Okinawa.
@@ -64,53 +94,407 @@ export default async function Home() {
             
             {/* Filter Tabs */}
             <div className="d-flex justify-content-center gap-2 mb-4">
-              <button 
+              <Link 
+                href="/listings"
                 className="btn px-4 py-2" 
                 style={{ 
                   background: 'var(--primary-pink)', 
                   color: 'white',
-                  borderRadius: '8px'
+                  borderRadius: '8px',
+                  textDecoration: 'none'
                 }}
               >
                 All Properties
-              </button>
-              <button 
+              </Link>
+              <Link 
+                href="/listings?features=ocean-view"
                 className="btn px-4 py-2" 
                 style={{ 
                   border: '1px solid var(--primary-pink)', 
                   color: 'var(--primary-pink)',
-                  borderRadius: '8px'
+                  borderRadius: '8px',
+                  textDecoration: 'none'
                 }}
               >
-                Military-Approved
-              </button>
-              <button 
+                Ocean View
+              </Link>
+              <Link 
+                href="/listings?features=pet-friendly"
                 className="btn px-4 py-2" 
                 style={{ 
                   border: '1px solid var(--primary-pink)', 
                   color: 'var(--primary-pink)',
-                  borderRadius: '8px'
+                  borderRadius: '8px',
+                  textDecoration: 'none'
                 }}
               >
-                Pet-Friendly
-              </button>
-              <button 
+                Pet Friendly
+              </Link>
+              <Link 
+                href="/listings?near=camp-foster"
                 className="btn px-4 py-2" 
                 style={{ 
                   border: '1px solid var(--primary-pink)', 
                   color: 'var(--primary-pink)',
-                  borderRadius: '8px'
+                  borderRadius: '8px',
+                  textDecoration: 'none'
                 }}
               >
-                Near Bases
-              </button>
+                Near Camp Foster
+              </Link>
+              <Link 
+                href="/listings?near=kadena-air-base"
+                className="btn px-4 py-2" 
+                style={{ 
+                  border: '1px solid var(--primary-pink)', 
+                  color: 'var(--primary-pink)',
+                  borderRadius: '8px',
+                  textDecoration: 'none'
+                }}
+              >
+                Near KAB
+              </Link>
             </div>
 
             {/* Search Bar */}
-            <div className="mt-5">
+            <div className="mt-5 mb-5">
               <SearchBar />
-              {/* Illustration Banner */}
-              <div className="position-absolute bottom-0 start-50 translate-middle-x" style={{ width: '100%', maxWidth: '1200px' }}>
+            </div>
+            
+            {/* Illustration Banner - Below Search Bar */}
+            <div className="position-relative" style={{ height: '80px', marginTop: '2rem' }}>
+              {/* Cityscape silhouette */}
+              <div className="position-absolute bottom-0 w-100" style={{ height: '80px' }}>
+                <div style={{ 
+                  maxWidth: '1400px', 
+                  margin: '0 auto', 
+                  position: 'relative',
+                  height: '100%'
+                }}>
+                  {/* Traditional Japanese House */}
+                  <div className="position-absolute" style={{ 
+                    left: '5%', 
+                    bottom: 0,
+                    width: '60px',
+                    height: '30px',
+                    backgroundColor: 'var(--primary-pink)',
+                    opacity: 0.3,
+                    position: 'relative',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                  }}>
+                    {/* Roof */}
+                    <div style={{
+                      position: 'absolute',
+                      top: '-20px',
+                      left: '-10px',
+                      width: '80px',
+                      height: '25px',
+                      borderRadius: '50% 50% 0 0 / 100% 100% 0 0',
+                      backgroundColor: 'var(--primary-pink)',
+                      opacity: 0.5,
+                      boxShadow: '0 -1px 3px rgba(0,0,0,0.1)'
+                    }}></div>
+                  </div>
+                  
+                  {/* Modern House */}
+                  <div className="position-absolute" style={{ 
+                    left: '18%', 
+                    bottom: 0,
+                    width: '50px',
+                    height: '35px',
+                    backgroundColor: 'var(--primary-pink)',
+                    opacity: 0.3,
+                    position: 'relative',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                  }}>
+                    {/* Roof */}
+                    <div style={{
+                      position: 'absolute',
+                      top: '-15px',
+                      left: '-5px',
+                      width: '60px',
+                      height: '20px',
+                      clipPath: 'polygon(0 100%, 50% 0, 100% 100%)',
+                      backgroundColor: 'var(--primary-pink)',
+                      opacity: 0.5,
+                      filter: 'drop-shadow(0 -1px 2px rgba(0,0,0,0.1))'
+                    }}></div>
+                    {/* Window */}
+                    <div style={{
+                      position: 'absolute',
+                      top: '10px',
+                      left: '10px',
+                      width: '15px',
+                      height: '15px',
+                      backgroundColor: 'white',
+                      opacity: 0.3
+                    }}></div>
+                    {/* Door */}
+                    <div style={{
+                      position: 'absolute',
+                      bottom: '0',
+                      right: '10px',
+                      width: '12px',
+                      height: '20px',
+                      backgroundColor: 'white',
+                      opacity: 0.3
+                    }}></div>
+                  </div>
+                  
+                  {/* Apartment Building */}
+                  <div className="position-absolute" style={{ 
+                    left: '32%', 
+                    bottom: 0,
+                    width: '70px',
+                    height: '65px',
+                    backgroundColor: 'var(--primary-pink)',
+                    opacity: 0.3,
+                    position: 'relative',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                  }}>
+                    {/* Windows - Row 1 */}
+                    <div style={{
+                      position: 'absolute',
+                      top: '10px',
+                      left: '10px',
+                      width: '10px',
+                      height: '10px',
+                      backgroundColor: 'white',
+                      opacity: 0.3
+                    }}></div>
+                    <div style={{
+                      position: 'absolute',
+                      top: '10px',
+                      left: '30px',
+                      width: '10px',
+                      height: '10px',
+                      backgroundColor: 'white',
+                      opacity: 0.3
+                    }}></div>
+                    <div style={{
+                      position: 'absolute',
+                      top: '10px',
+                      left: '50px',
+                      width: '10px',
+                      height: '10px',
+                      backgroundColor: 'white',
+                      opacity: 0.3
+                    }}></div>
+                    {/* Windows - Row 2 */}
+                    <div style={{
+                      position: 'absolute',
+                      top: '30px',
+                      left: '10px',
+                      width: '10px',
+                      height: '10px',
+                      backgroundColor: 'white',
+                      opacity: 0.3
+                    }}></div>
+                    <div style={{
+                      position: 'absolute',
+                      top: '30px',
+                      left: '30px',
+                      width: '10px',
+                      height: '10px',
+                      backgroundColor: 'white',
+                      opacity: 0.3
+                    }}></div>
+                    <div style={{
+                      position: 'absolute',
+                      top: '30px',
+                      left: '50px',
+                      width: '10px',
+                      height: '10px',
+                      backgroundColor: 'white',
+                      opacity: 0.3
+                    }}></div>
+                    {/* Door */}
+                    <div style={{
+                      position: 'absolute',
+                      bottom: '0',
+                      left: '25px',
+                      width: '20px',
+                      height: '15px',
+                      backgroundColor: 'white',
+                      opacity: 0.3
+                    }}></div>
+                  </div>
+                  
+                  {/* Military Base Building */}
+                  <div className="position-absolute" style={{ 
+                    left: '50%', 
+                    bottom: 0,
+                    width: '80px',
+                    height: '40px',
+                    backgroundColor: 'var(--primary-pink)',
+                    opacity: 0.3,
+                    position: 'relative',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                  }}>
+                    {/* Flat Roof */}
+                    <div style={{
+                      position: 'absolute',
+                      top: '-5px',
+                      left: '-5px',
+                      width: '90px',
+                      height: '5px',
+                      backgroundColor: 'var(--primary-pink)',
+                      opacity: 0.5,
+                      boxShadow: '0 -1px 3px rgba(0,0,0,0.1)'
+                    }}></div>
+                    {/* Windows */}
+                    <div style={{
+                      position: 'absolute',
+                      top: '15px',
+                      left: '15px',
+                      width: '15px',
+                      height: '15px',
+                      backgroundColor: 'white',
+                      opacity: 0.3
+                    }}></div>
+                    <div style={{
+                      position: 'absolute',
+                      top: '15px',
+                      right: '15px',
+                      width: '15px',
+                      height: '15px',
+                      backgroundColor: 'white',
+                      opacity: 0.3
+                    }}></div>
+                  </div>
+                  
+                  {/* Traditional House */}
+                  <div className="position-absolute" style={{ 
+                    left: '68%', 
+                    bottom: 0,
+                    width: '55px',
+                    height: '30px',
+                    backgroundColor: 'var(--primary-pink)',
+                    opacity: 0.3,
+                    position: 'relative',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                  }}>
+                    {/* Roof */}
+                    <div style={{
+                      position: 'absolute',
+                      top: '-18px',
+                      left: '-5px',
+                      width: '65px',
+                      height: '18px',
+                      clipPath: 'polygon(0 100%, 50% 0, 100% 100%)',
+                      backgroundColor: 'var(--primary-pink)',
+                      opacity: 0.5,
+                      boxShadow: '0 -1px 3px rgba(0,0,0,0.1)'
+                    }}></div>
+                    {/* Window */}
+                    <div style={{
+                      position: 'absolute',
+                      top: '8px',
+                      left: '10px',
+                      width: '12px',
+                      height: '12px',
+                      backgroundColor: 'white',
+                      opacity: 0.3
+                    }}></div>
+                    {/* Door */}
+                    <div style={{
+                      position: 'absolute',
+                      bottom: '0',
+                      right: '15px',
+                      width: '10px',
+                      height: '15px',
+                      backgroundColor: 'white',
+                      opacity: 0.3
+                    }}></div>
+                  </div>
+                  
+                  {/* Tall Building */}
+                  <div className="position-absolute" style={{ 
+                    left: '82%', 
+                    bottom: 0,
+                    width: '40px',
+                    height: '70px',
+                    backgroundColor: 'var(--primary-pink)',
+                    opacity: 0.3,
+                    position: 'relative',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                  }}>
+                    {/* Windows - Column 1 */}
+                    <div style={{
+                      position: 'absolute',
+                      top: '10px',
+                      left: '10px',
+                      width: '8px',
+                      height: '8px',
+                      backgroundColor: 'white',
+                      opacity: 0.3
+                    }}></div>
+                    <div style={{
+                      position: 'absolute',
+                      top: '25px',
+                      left: '10px',
+                      width: '8px',
+                      height: '8px',
+                      backgroundColor: 'white',
+                      opacity: 0.3
+                    }}></div>
+                    <div style={{
+                      position: 'absolute',
+                      top: '40px',
+                      left: '10px',
+                      width: '8px',
+                      height: '8px',
+                      backgroundColor: 'white',
+                      opacity: 0.3
+                    }}></div>
+                    <div style={{
+                      position: 'absolute',
+                      top: '55px',
+                      left: '10px',
+                      width: '8px',
+                      height: '8px',
+                      backgroundColor: 'white',
+                      opacity: 0.3
+                    }}></div>
+                    {/* Windows - Column 2 */}
+                    <div style={{
+                      position: 'absolute',
+                      top: '10px',
+                      right: '10px',
+                      width: '8px',
+                      height: '8px',
+                      backgroundColor: 'white',
+                      opacity: 0.3
+                    }}></div>
+                    <div style={{
+                      position: 'absolute',
+                      top: '25px',
+                      right: '10px',
+                      width: '8px',
+                      height: '8px',
+                      backgroundColor: 'white',
+                      opacity: 0.3
+                    }}></div>
+                    <div style={{
+                      position: 'absolute',
+                      top: '40px',
+                      right: '10px',
+                      width: '8px',
+                      height: '8px',
+                      backgroundColor: 'white',
+                      opacity: 0.3
+                    }}></div>
+                    <div style={{
+                      position: 'absolute',
+                      top: '55px',
+                      right: '10px',
+                      width: '8px',
+                      height: '8px',
+                      backgroundColor: 'white',
+                      opacity: 0.3
+                    }}></div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -160,7 +544,7 @@ export default async function Home() {
                       <p className="h5 mb-3 text-primary">¥{listing.price.toLocaleString()}</p>
                       <div className="d-flex align-items-center text-muted mb-2">
                         <FontAwesomeIcon icon={faMapMarkerAlt} className="me-2" />
-                        <span>{listing.location}</span>
+                        <span>{listing.prefecture}</span>
                       </div>
                       <div className="d-flex justify-content-between text-muted">
                         <span>{listing.bedrooms} Beds</span>
@@ -174,17 +558,19 @@ export default async function Home() {
             ))}
           </div>
           <div className="text-center mt-5">
-            <a 
+            <Link 
               href="/listings"
-              className="btn btn-primary btn-lg"
+              className="btn btn-lg"
               style={{
-                backgroundColor: '#e75d7c',
-                borderColor: '#e75d7c',
-                padding: '1rem 2rem'
+                backgroundColor: 'var(--primary-pink)',
+                borderColor: 'var(--primary-pink)',
+                color: 'white',
+                padding: '1rem 2rem',
+                textDecoration: 'none'
               }}
             >
               Browse All Properties
-            </a>
+            </Link>
           </div>
         </div>
       </section>
@@ -199,8 +585,8 @@ export default async function Home() {
           <div className="row g-4">
             {neighborhoods.map((neighborhood, index) => (
               <div key={index} className="col-md-4">
-                <a 
-                  href={`/neighborhoods/${neighborhood.name.toLowerCase()}`}
+                <Link 
+                  href={`/city-guides/${neighborhood.name.toLowerCase()}`}
                   className="text-decoration-none"
                 >
                   <div 
@@ -208,18 +594,18 @@ export default async function Home() {
                     style={{ 
                       borderRadius: '1rem',
                       boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                      transition: 'all 0.2s ease-in-out'
+                      transition: 'all 0.2s ease-in-out',
+                      overflow: 'hidden'
                     }}
                   >
-                    <div className="position-relative" style={{ height: '240px' }}>
+                    <div className="position-relative" style={{ height: '240px', overflow: 'hidden' }}>
                       <Image
                         src={neighborhood.image}
                         alt={neighborhood.name}
-                        width={400}
-                        height={240}
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         style={{ 
-                          objectFit: "cover",
-                          borderRadius: '1rem 1rem 0 0'
+                          objectFit: "cover"
                         }}
                       />
                     </div>
@@ -244,22 +630,24 @@ export default async function Home() {
                       </p>
                     </div>
                   </div>
-                </a>
+                </Link>
               </div>
             ))}
           </div>
           <div className="text-center mt-5">
-            <a 
+            <Link 
               href="/city-guides"
-              className="btn btn-primary btn-lg"
+              className="btn btn-lg"
               style={{
-                backgroundColor: '#e75d7c',
-                borderColor: '#e75d7c',
-                padding: '1rem 2rem'
+                backgroundColor: 'var(--primary-pink)',
+                borderColor: 'var(--primary-pink)',
+                color: 'white',
+                padding: '1rem 2rem',
+                textDecoration: 'none'
               }}
             >
               View All City Guides
-            </a>
+            </Link>
           </div>
         </div>
       </section>
@@ -268,7 +656,7 @@ export default async function Home() {
       <section className="py-5">
         <div className="container">
           <div className="text-center mb-5">
-            <h2 className="h3 fw-bold mb-2" style={{ color: '#e75d7c' }}>Frequently Asked Questions</h2>
+            <h2 className="h3 fw-bold mb-2" style={{ color: 'var(--primary-pink)' }}>Frequently Asked Questions</h2>
             <p className="text-muted mb-0">Everything you need to know about finding housing in Okinawa</p>
           </div>
           <div className="row justify-content-center">

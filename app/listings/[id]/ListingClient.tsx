@@ -1,264 +1,310 @@
 'use client';
 
-import { useState } from 'react';
-import Image from 'next/image';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faHeart as faHeartSolid,
-  faCalendarPlus,
-  faMapMarkerAlt,
-  faChevronLeft,
-  faShield
-} from '@fortawesome/free-solid-svg-icons';
-import { faHeart as faHeartRegular } from '@fortawesome/free-regular-svg-icons';
-import Link from 'next/link';
 import { Listing } from '@/types/listing';
-import LoginPromptModal from '@/components/LoginPromptModal';
-import ListingMap from '@/components/ListingMap';
+import { User } from '@/types/user';
+import { formatPrice } from '@/utils/formatPrice';
+import { useRouter } from 'next/navigation';
+import { useCallback, useMemo } from 'react';
+import Link from 'next/link';
+import ImageGallery from '@/components/ImageGallery';
+import AgencyCard from '@/components/AgencyCard';
+import NearbyListings from '@/components/NearbyListings';
+import { useFavorites } from '@/hooks/useFavorites';
+import { useViewings } from '@/hooks/useViewings';
+import { useAuth } from '@/hooks/useAuth';
+import AmenitiesDisplay from '@/components/AmenitiesDisplay';
+import Button from '@/components/Button';
+import styles from './styles.module.css';
 
 interface ListingClientProps {
   listing: Listing;
-  isLoggedIn?: boolean;
 }
 
-export default function ListingClient({ listing, isLoggedIn }: ListingClientProps) {
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  const [loginModalType, setLoginModalType] = useState<'favorite' | 'tour'>('favorite');
-  const [isFavorite, setIsFavorite] = useState(false);
+const ListingClient: React.FC<ListingClientProps> = ({
+  listing
+}) => {
+  const router = useRouter();
+  const { user } = useAuth();
+  const { hasFavorited, toggleFavorite } = useFavorites({
+    listingId: listing.id || '',
+    currentUser: user as User | null
+  });
 
-  const handleFavoriteClick = () => {
-    if (!isLoggedIn) {
-      setLoginModalType('favorite');
-      setShowLoginModal(true);
+  const { hasRequested, toggleViewing } = useViewings({
+    listingId: listing.id || '',
+    currentUser: user as User | null
+  });
+
+  const location = useMemo(() => {
+    return `${listing.city}${listing.prefecture ? `, ${listing.prefecture}` : ''}`;
+  }, [listing.city, listing.prefecture]);
+
+  const handleContactAgent = useCallback(() => {
+    // Implement contact agent functionality
+    console.log('Contact agent clicked');
+  }, []);
+
+  const handleTourRequest = useCallback(() => {
+    if (!user) {
+      router.push('/login?redirect=/listings/' + listing.id);
       return;
     }
-    setIsFavorite(!isFavorite);
-  };
+    toggleViewing?.();
+  }, [user, listing.id, router, toggleViewing]);
 
-  const handleTourRequest = () => {
-    if (!isLoggedIn) {
-      setLoginModalType('tour');
-      setShowLoginModal(true);
-      return;
-    }
-    // Handle tour request
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
+  const handleFavoriteClick = useCallback(() => {
+    toggleFavorite?.();
+  }, [toggleFavorite]);
 
   return (
-    <main className="bg-white">
-      {/* Hero Section */}
-      <div className="bg-white border-bottom">
-        <div className="container">
-          <div className="py-4">
-            {/* Navigation */}
-            <Link 
-              href="/listings" 
-              className="text-decoration-none d-inline-flex align-items-center gap-2 mb-3"
-              style={{ color: 'var(--primary-pink)', fontSize: '0.9rem' }}
-            >
-              <FontAwesomeIcon icon={faChevronLeft} />
-              Back to Listings
-            </Link>
-
-            {/* Title and Location */}
-            <div className="row align-items-start mb-4">
-              <div className="col-lg-8">
-                <h1 className="h3 mb-2">{listing.title}</h1>
-                <div className="d-flex flex-wrap align-items-center gap-3">
-                  <div className="d-flex align-items-center gap-2">
-                    <FontAwesomeIcon icon={faMapMarkerAlt} className="text-pink" />
-                    <span>{listing.location}</span>
-                  </div>
-                  {listing.baseInspected && (
-                    <div className="badge rounded-pill" style={{ 
-                      backgroundColor: 'var(--light-pink)',
-                      color: 'var(--primary-pink)',
-                      padding: '6px 12px',
-                      fontSize: '0.9rem'
-                    }}>
-                      <FontAwesomeIcon icon={faShield} className="me-1" />
-                      Base Inspected
-                    </div>
-                  )}
-                </div>
-              </div>
-              <div className="col-lg-4">
-                <div className="d-flex flex-column align-items-lg-end">
-                  <div className="d-flex align-items-baseline gap-2 mb-2">
-                    <h2 className="h3 mb-0">¥{listing.price.toLocaleString()}</h2>
-                    <span className="text-muted">/month</span>
-                  </div>
-                  <p className="text-muted mb-0" style={{ fontSize: '0.9rem' }}>
-                    Approx. ${listing.priceUSD.toLocaleString()} USD
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="d-flex gap-2">
-              <button 
-                onClick={handleTourRequest}
-                className="btn btn-primary d-flex align-items-center gap-2"
-                style={{
-                  backgroundColor: 'var(--primary-pink)',
-                  border: 'none',
-                  padding: '10px 20px'
-                }}
-              >
-                <FontAwesomeIcon icon={faCalendarPlus} />
-                Request Tour
-              </button>
-              <button 
-                onClick={handleFavoriteClick}
-                className="btn d-flex align-items-center justify-content-center"
-                style={{
-                  width: '42px',
-                  height: '42px',
-                  border: '1px solid var(--medium-pink)',
-                  color: isFavorite ? 'var(--primary-pink)' : 'var(--medium-pink)',
-                  backgroundColor: 'white'
-                }}
-              >
-                <FontAwesomeIcon icon={isFavorite ? faHeartSolid : faHeartRegular} />
-              </button>
+    <div className={styles.container}>
+      <div className={styles.breadcrumb}>
+        <Link href="/listings">Listings</Link> / <span>{listing.title}</span>
+      </div>
+      
+      <ImageGallery images={listing.images} title={listing.title} />
+      
+      <div className={styles.content}>
+        <div className={styles.mainColumn}>
+          <div className={styles.listingHeader}>
+            <h1 className={styles.title}>{listing.title}</h1>
+            <div className={styles.location}>
+              <i className="fa-solid fa-location-dot"></i>
+              <span>{location}</span>
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* Property Details */}
-      <div className="container py-5">
-        {/* Property Images */}
-        <div className="row mb-5">
-          <div className="col-12">
-            <div className="position-relative" style={{ height: '400px' }}>
-              {listing.images && listing.images[0] && (
-                <Image
-                  src={listing.images[0]}
-                  alt={listing.title}
-                  fill
-                  style={{ objectFit: 'cover' }}
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
-                  priority
-                />
+          
+          <div className={styles.quickInfo}>
+            <div className={styles.price}>
+              <div className={styles.priceJPY}>{formatPrice(listing.price)}</div>
+              {listing.priceUSD && (
+                <div className={styles.priceUSD}>
+                  ${listing.priceUSD.toLocaleString('en-US')} USD
+                </div>
+              )}
+            </div>
+            
+            <div className={styles.features}>
+              <div className={styles.feature}>
+                <i className="fa-solid fa-bed"></i>
+                <span>{listing.bedrooms} {listing.bedrooms === 1 ? 'Bedroom' : 'Bedrooms'}</span>
+              </div>
+              <div className={styles.feature}>
+                <i className="fa-solid fa-bath"></i>
+                <span>{listing.bathrooms} {listing.bathrooms === 1 ? 'Bathroom' : 'Bathrooms'}</span>
+              </div>
+              <div className={styles.feature}>
+                <i className="fa-solid fa-ruler-combined"></i>
+                <span>{listing.squareMeters} m²</span>
+              </div>
+              {(listing.parkingSpaces || 0) > 0 && (
+                <div className={styles.feature}>
+                  <i className="fa-solid fa-car"></i>
+                  <span>{listing.parkingSpaces} {listing.parkingSpaces === 1 ? 'Parking Space' : 'Parking Spaces'}</span>
+                </div>
+              )}
+              {listing.listingType && (
+                <div className={styles.feature}>
+                  <i className="fa-solid fa-home"></i>
+                  <span>{listing.listingType.charAt(0).toUpperCase() + listing.listingType.slice(1)}</span>
+                </div>
               )}
             </div>
           </div>
-        </div>
-
-        {/* Property Info */}
-        <div className="row">
-          <div className="col-lg-8">
-            {/* Description */}
-            <section className="mb-5">
-              <h2 className="h4 mb-4">About this property</h2>
-              <p>{listing.description}</p>
-            </section>
-
-            {/* Details */}
-            <section className="mb-5">
-              <h2 className="h4 mb-4">Property Details</h2>
-              <div className="row g-4">
-                <div className="col-6 col-md-4">
-                  <div className="d-flex flex-column">
-                    <span className="text-muted" style={{ fontSize: '0.9rem' }}>Property Type</span>
-                    <span className="fw-medium">{listing.listingType}</span>
-                  </div>
-                </div>
-                <div className="col-6 col-md-4">
-                  <div className="d-flex flex-column">
-                    <span className="text-muted" style={{ fontSize: '0.9rem' }}>Bedrooms</span>
-                    <span className="fw-medium">{listing.bedrooms}</span>
-                  </div>
-                </div>
-                <div className="col-6 col-md-4">
-                  <div className="d-flex flex-column">
-                    <span className="text-muted" style={{ fontSize: '0.9rem' }}>Bathrooms</span>
-                    <span className="fw-medium">{listing.bathrooms}</span>
-                  </div>
-                </div>
-                <div className="col-6 col-md-4">
-                  <div className="d-flex flex-column">
-                    <span className="text-muted" style={{ fontSize: '0.9rem' }}>Floor Area</span>
-                    <span className="fw-medium">{listing.floorArea} m²</span>
-                  </div>
-                </div>
-                <div className="col-6 col-md-4">
-                  <div className="d-flex flex-column">
-                    <span className="text-muted" style={{ fontSize: '0.9rem' }}>Year Built</span>
-                    <span className="fw-medium">{listing.yearBuilt}</span>
-                  </div>
-                </div>
-                <div className="col-6 col-md-4">
-                  <div className="d-flex flex-column">
-                    <span className="text-muted" style={{ fontSize: '0.9rem' }}>Available From</span>
-                    <span className="fw-medium">{formatDate(listing.availableFrom)}</span>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* Location */}
-            <section className="mb-5">
-              <h2 className="h4 mb-4">Location</h2>
-              <div style={{ height: '300px' }}>
-                <ListingMap 
-                  listing={listing}
-                  className="shadow-sm"
-                />
-              </div>
-            </section>
-          </div>
-
-          {/* Contact Section */}
-          <div className="col-lg-4">
-            <div className="card p-4">
-              <h3 className="h5 mb-4">Contact Agent</h3>
-              <form>
-                <div className="mb-3">
-                  <label htmlFor="name" className="form-label">Name</label>
-                  <input type="text" className="form-control" id="name" />
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="email" className="form-label">Email</label>
-                  <input type="email" className="form-control" id="email" />
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="message" className="form-label">Message</label>
-                  <textarea className="form-control" id="message" rows={4}></textarea>
-                </div>
-                <button 
-                  type="submit" 
-                  className="btn btn-primary w-100"
-                  style={{
-                    backgroundColor: 'var(--primary-pink)',
-                    border: 'none'
-                  }}
-                >
-                  Send Message
-                </button>
-              </form>
+          
+          <div className={styles.section}>
+            <h2 className={styles.sectionTitle}>Description</h2>
+            <div className={styles.description}>
+              {listing.description || 'No description provided.'}
             </div>
           </div>
+          
+          <div className={styles.section}>
+            <h2 className={styles.sectionTitle}>Property Details</h2>
+            <div className={styles.detailsGrid}>
+              {(listing.yearBuilt || 0) > 0 && (
+                <div className={styles.detailItem}>
+                  <span className={styles.detailLabel}>Year Built</span>
+                  <span className={styles.detailValue}>{listing.yearBuilt}</span>
+                </div>
+              )}
+              {listing.availableFrom && (
+                <div className={styles.detailItem}>
+                  <span className={styles.detailLabel}>Available From</span>
+                  <span className={styles.detailValue}>{new Date(listing.availableFrom).toLocaleDateString()}</span>
+                </div>
+              )}
+              {listing.leaseTerm && (
+                <div className={styles.detailItem}>
+                  <span className={styles.detailLabel}>Lease Term</span>
+                  <span className={styles.detailValue}>{listing.leaseTerm}</span>
+                </div>
+              )}
+              {listing.utilitiesIncluded !== undefined && (
+                <div className={styles.detailItem}>
+                  <span className={styles.detailLabel}>Utilities</span>
+                  <span className={styles.detailValue}>{listing.utilitiesIncluded ? 'Included' : 'Not Included'}</span>
+                </div>
+              )}
+              {listing.baseInspected !== undefined && (
+                <div className={styles.detailItem}>
+                  <span className={styles.detailLabel}>Base Inspected</span>
+                  <span className={styles.detailValue}>{listing.baseInspected ? 'Yes' : 'No'}</span>
+                </div>
+              )}
+            </div>
+          </div>
+          
+          {listing.amenities && (
+            <div className={styles.section}>
+              <h2 className={styles.sectionTitle}>Amenities</h2>
+              <AmenitiesDisplay amenities={listing.amenities} />
+            </div>
+          )}
+          
+          {listing.nearbyBases && listing.nearbyBases.length > 0 && (
+            <div className={styles.section}>
+              <h2 className={styles.sectionTitle}>Nearby Military Bases</h2>
+              <div className={styles.baseGrid}>
+                {listing.nearbyBases.map((base, index) => (
+                  <div key={index} className={styles.baseItem}>
+                    <div className={styles.baseName}>{base.name}</div>
+                    <div className={styles.baseDistance}>{base.distance} km away</div>
+                    {base.shuttleAvailable && (
+                      <div className={styles.baseShuttle}>
+                        <i className="fa-solid fa-bus"></i>
+                        <span>Shuttle service available</span>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+        
+        <div className={styles.sideColumn}>
+          <div className={styles.actionButtons}>
+            <Button 
+              variant="primary"
+              size="medium"
+              fullWidth
+              onClick={handleContactAgent}
+            >
+              Contact Agent
+            </Button>
+            <Button 
+              variant="secondary"
+              size="medium"
+              fullWidth
+              onClick={handleFavoriteClick}
+              className={hasFavorited ? styles.favorited : ''}
+            >
+              {hasFavorited ? 'Saved' : 'Save to Favorites'}
+            </Button>
+            <Button 
+              variant="secondary"
+              size="medium"
+              fullWidth
+              onClick={handleTourRequest}
+              className={hasRequested ? styles.requested : ''}
+            >
+              {hasRequested ? 'Tour Requested' : 'Request a Tour'}
+            </Button>
+          </div>
+          
+          {listing.agency && (
+            <AgencyCard 
+              name={listing.agency.name || 'Agency'}
+              logo={listing.agency.logo || '/images/default-agency-logo.png'}
+              description={listing.agency.description || 'Contact this agency for more information about this listing.'}
+              phone={listing.agency.phone || 'N/A'}
+              email={listing.agency.email || 'N/A'}
+              website={listing.agency.website}
+            />
+          )}
+          
+          {!listing.agency && listing.agencyId && (
+            <div className={styles.sideSection}>
+              <h3 className={styles.sideSectionTitle}>Contact Information</h3>
+              <p>Please contact the property manager for more information.</p>
+            </div>
+          )}
+          
+          <div className={styles.sideSection}>
+            <h3 className={styles.sideSectionTitle}>Move-in Costs</h3>
+            <div className={styles.moveInCosts}>
+              <div className={styles.costItem}>
+                <span className={styles.costLabel}>First Month's Rent</span>
+                <span className={styles.costValue}>{formatPrice(listing.price)}</span>
+              </div>
+              {(listing.securityDeposit || 0) > 0 && (
+                <div className={styles.costItem}>
+                  <span className={styles.costLabel}>Security Deposit</span>
+                  <span className={styles.costValue}>{formatPrice(listing.securityDeposit || 0)}</span>
+                </div>
+              )}
+              {(listing.keyMoney || 0) > 0 && (
+                <div className={styles.costItem}>
+                  <span className={styles.costLabel}>Key Money</span>
+                  <span className={styles.costValue}>{formatPrice(listing.keyMoney || 0)}</span>
+                </div>
+              )}
+              {(listing.agencyFee || 0) > 0 && (
+                <div className={styles.costItem}>
+                  <span className={styles.costLabel}>Agency Fee</span>
+                  <span className={styles.costValue}>{formatPrice(listing.agencyFee || 0)}</span>
+                </div>
+              )}
+              {(listing.guarantorFee || 0) > 0 && (
+                <div className={styles.costItem}>
+                  <span className={styles.costLabel}>Guarantor Fee</span>
+                  <span className={styles.costValue}>{formatPrice(listing.guarantorFee || 0)}</span>
+                </div>
+              )}
+              <div className={styles.costItem}>
+                <span className={styles.costLabel}>Total Move-in Cost</span>
+                <span className={styles.costTotal}>
+                  {formatPrice(
+                    listing.price + 
+                    (listing.securityDeposit || 0) + 
+                    (listing.keyMoney || 0) + 
+                    (listing.agencyFee || 0) + 
+                    (listing.guarantorFee || 0)
+                  )}
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          {listing.baseInspected && (
+            <div className={styles.baseInspected}>
+              <i className="fa-solid fa-check-circle"></i>
+              <span>Base Housing Office Inspected</span>
+            </div>
+          )}
+          
+          {listing.petPolicy && listing.petPolicy.length > 0 && (
+            <div className={styles.sideSection}>
+              <h3 className={styles.sideSectionTitle}>Pet Policy</h3>
+              <ul className={styles.petPolicy}>
+                {listing.petPolicy.map((policy, index) => (
+                  <li key={index} className={styles.petPolicyItem}>
+                    <i className="fa-solid fa-paw"></i>
+                    <span>{policy}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       </div>
-
-      {/* Login Modal */}
-      <LoginPromptModal 
-        isOpen={showLoginModal}
-        onClose={() => setShowLoginModal(false)}
-        message={`Please log in to ${loginModalType} this property`}
-        actionType={loginModalType}
-      />
-    </main>
+      
+      <div className={styles.nearbySection}>
+        <NearbyListings currentListingId={listing.id || ''} city={listing.city || ''} />
+      </div>
+    </div>
   );
-}
+};
+
+export default ListingClient;

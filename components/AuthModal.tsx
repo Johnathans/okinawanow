@@ -6,8 +6,9 @@ import { faGoogle, faFacebook } from '@fortawesome/free-brands-svg-icons';
 import { faEnvelope, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { signInWithGoogle, signInWithEmail, signUpWithEmail, resetPassword } from '@/lib/firebase-auth';
 import { useRouter } from 'next/navigation';
-import { auth } from '@/lib/firebase';
+import { auth, db } from '@/lib/firebase';
 import { signInWithPopup, GoogleAuthProvider, FacebookAuthProvider } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
 
 type AuthMode = 'signin' | 'signup' | 'reset';
 
@@ -50,8 +51,21 @@ export default function AuthModal({ show, onClose, onSuccess }: AuthModalProps) 
         await signUpWithEmail(formData.email, formData.password, formData.displayName);
         router.push('/profile-setup');
       } else if (mode === 'signin') {
-        await signInWithEmail(formData.email, formData.password);
-        router.push('/profile-setup');
+        const userCredential = await signInWithEmail(formData.email, formData.password);
+        
+        // Check if user has a profile before redirecting to profile setup
+        if (userCredential.user) {
+          const userProfileRef = doc(db, 'userProfiles', userCredential.user.uid);
+          const userProfileSnap = await getDoc(userProfileRef);
+          
+          if (!userProfileSnap.exists()) {
+            // Only redirect to profile setup if user doesn't have a profile
+            router.push('/profile-setup');
+          } else {
+            // User has a profile, redirect to home
+            router.push('/');
+          }
+        }
       } else if (mode === 'reset') {
         await resetPassword(formData.email);
         alert('Password reset email sent! Check your inbox.');
@@ -68,10 +82,9 @@ export default function AuthModal({ show, onClose, onSuccess }: AuthModalProps) 
     try {
       setError(null);
       setLoading(true);
-      await signInWithGoogle();
+      const result = await signInWithGoogle();
       onSuccess?.();
       onClose();
-      router.push('/profile-setup');
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Failed to sign in with Google');
     } finally {
@@ -81,12 +94,30 @@ export default function AuthModal({ show, onClose, onSuccess }: AuthModalProps) 
 
   const handleFacebookSignIn = async () => {
     try {
+      setError(null);
+      setLoading(true);
       const provider = new FacebookAuthProvider();
-      await signInWithPopup(auth, provider);
+      const result = await signInWithPopup(auth, provider);
       onSuccess?.();
       onClose();
+      
+      // Check if user has a profile before redirecting to profile setup
+      if (result.user) {
+        const userProfileRef = doc(db, 'userProfiles', result.user.uid);
+        const userProfileSnap = await getDoc(userProfileRef);
+        
+        if (!userProfileSnap.exists()) {
+          // Only redirect to profile setup if user doesn't have a profile
+          router.push('/profile-setup');
+        } else {
+          // User has a profile, redirect to home
+          router.push('/');
+        }
+      }
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Failed to sign in with Facebook');
+    } finally {
+      setLoading(false);
     }
   };
 

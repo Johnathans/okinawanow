@@ -33,7 +33,6 @@ interface FavoriteListing {
   utilitiesIncluded: boolean;
   negotiable: boolean;
   city: string;
-  nearestBase: string;
   interiorAmenities: typeof INTERIOR_AMENITIES[number][];
   bathroomAmenities: typeof BATHROOM_AMENITIES[number][];
   kitchenAmenities: typeof KITCHEN_AMENITIES[number][];
@@ -85,7 +84,6 @@ export default function FavoritesPage() {
             utilitiesIncluded: data.utilitiesIncluded || false,
             negotiable: data.negotiable || false,
             city: data.city || '',
-            nearestBase: data.nearestBase || '',
             interiorAmenities: data.interiorAmenities || [],
             bathroomAmenities: data.bathroomAmenities || [],
             kitchenAmenities: data.kitchenAmenities || [],
@@ -178,7 +176,6 @@ export default function FavoritesPage() {
                   <ListingCard
                     listing={{
                       ...listing,
-                      listingId: listing.id,
                       priceUSD: listing.price,
                       status: ListingStatus.Active,
                       negotiable: false,
@@ -187,24 +184,24 @@ export default function FavoritesPage() {
                       leaseTerm: '12',
                       baseInspected: false,
                       utilitiesIncluded: false,
-                      moveInCosts: {
-                        deposit: 0,
-                        keyMoney: 0,
-                        agencyFee: 0,
-                        guarantorFee: 0
-                      },
-                      baseProximity: [],
+                      securityDeposit: 0,
+                      keyMoney: 0,
+                      agencyFee: 0,
+                      guarantorFee: 0,
+                      nearbyBases: [],
                       available: true,
                       featured: false,
                       city: listing.city || '',
-                      nearestBase: listing.nearestBase || '',
-                      interiorAmenities: (listing.interiorAmenities || []) as typeof INTERIOR_AMENITIES[number][],
-                      bathroomAmenities: (listing.bathroomAmenities || []) as typeof BATHROOM_AMENITIES[number][],
-                      kitchenAmenities: (listing.kitchenAmenities || []) as typeof KITCHEN_AMENITIES[number][],
-                      buildingAmenities: (listing.buildingAmenities || []) as typeof BUILDING_AMENITIES[number][],
-                      utilityAmenities: (listing.utilityAmenities || []) as typeof UTILITY_AMENITIES[number][],
-                      securityAmenities: (listing.securityAmenities || []) as typeof SECURITY_AMENITIES[number][],
-                      locationFeatures: (listing.locationFeatures || []) as typeof LOCATION_FEATURES[number][]
+                      squareMeters: listing.floorArea || 0,
+                      amenities: {
+                        interior: (listing.interiorAmenities || []) as typeof INTERIOR_AMENITIES[number][],
+                        bathroom: (listing.bathroomAmenities || []) as typeof BATHROOM_AMENITIES[number][],
+                        kitchen: (listing.kitchenAmenities || []) as typeof KITCHEN_AMENITIES[number][],
+                        building: (listing.buildingAmenities || []) as typeof BUILDING_AMENITIES[number][],
+                        utility: (listing.utilityAmenities || []) as typeof UTILITY_AMENITIES[number][],
+                        security: (listing.securityAmenities || []) as typeof SECURITY_AMENITIES[number][],
+                        location: (listing.locationFeatures || []) as typeof LOCATION_FEATURES[number][]
+                      }
                     }}
                     onFavorite={() => removeFavorite(listing.id)}
                     isFavorite={true}

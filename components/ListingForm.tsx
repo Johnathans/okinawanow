@@ -14,11 +14,11 @@ const initialFormState: Partial<Listing> = {
   title: '',
   description: '',
   price: 0,
-  location: '',
+  prefecture: '',
   listingType: ListingType.Apartment,
   bedrooms: 1,
   bathrooms: 1,
-  floorArea: 0,
+  squareMeters: 0,
   images: [],
   status: ListingStatus.Active
 };
@@ -173,12 +173,12 @@ export default function ListingForm({ onSubmit, initialData, isLoading, mode }: 
                 />
               </div>
               <div className="col-md-4">
-                <label className="form-label">Floor Area (m²)</label>
+                <label className="form-label">Square Meters (m²)</label>
                 <input
                   type="number"
                   className="form-control"
-                  name="floorArea"
-                  value={formData.floorArea}
+                  name="squareMeters"
+                  value={formData.squareMeters}
                   onChange={handleChange}
                   min="0"
                   required
@@ -193,12 +193,12 @@ export default function ListingForm({ onSubmit, initialData, isLoading, mode }: 
             <h3>Location</h3>
             <div className="row g-3">
               <div className="col-12">
-                <label className="form-label">Address</label>
+                <label className="form-label">Prefecture</label>
                 <input
                   type="text"
                   className="form-control"
-                  name="location"
-                  value={formData.location}
+                  name="prefecture"
+                  value={formData.prefecture}
                   onChange={handleChange}
                   required
                 />
