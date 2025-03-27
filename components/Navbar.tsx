@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePathname } from 'next/navigation';
@@ -38,14 +38,53 @@ export default function Navbar() {
   const [showAuthModal, setShowAuthModal] = React.useState(false);
   const isListingsPage = pathname === '/listings' || pathname.startsWith('/listings?');
   const isAdmin = user?.email?.toLowerCase() === 'smithjohnathanr@gmail.com';
+  const navbarRef = useRef<HTMLDivElement>(null);
+
+  // Close mobile menu when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (navbarRef.current && !navbarRef.current.contains(event.target as Node) && isMobileMenuOpen) {
+        setIsMobileMenuOpen(false);
+      }
+    }
+
+    // Close mobile menu when route changes
+    if (isMobileMenuOpen) {
+      setIsMobileMenuOpen(false);
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [pathname, isMobileMenuOpen]);
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isMobileMenuOpen]);
 
   const handleSignOut = () => {
     signOut();
   };
 
+  const handleNavLinkClick = () => {
+    if (window.innerWidth < 992) {
+      setIsMobileMenuOpen(false);
+    }
+  };
+
   return (
     <>
-      <nav className="navbar navbar-expand-lg bg-white border-bottom sticky-top shadow-sm">
+      <nav className="navbar navbar-expand-lg bg-white border-bottom sticky-top shadow-sm" ref={navbarRef}>
         <div className={`${isListingsPage ? 'container-fluid px-4' : 'container'}`}>
           <Link href="/" className="d-flex align-items-center text-decoration-none">
             <div className="d-flex align-items-center">
@@ -81,11 +120,23 @@ export default function Navbar() {
             className="navbar-toggler border-0"
             type="button"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label="Toggle navigation"
           >
             <FontAwesomeIcon icon={isMobileMenuOpen ? faXmark : faBars} style={{ color: 'var(--primary-pink)' }} />
           </button>
 
-          <div className={`collapse navbar-collapse ${isMobileMenuOpen ? 'show' : ''}`}>
+          <div className={`collapse navbar-collapse ${isMobileMenuOpen ? 'show' : ''}`} style={{
+            position: isMobileMenuOpen ? 'fixed' : 'static',
+            top: isMobileMenuOpen ? '56px' : 'auto',
+            left: 0,
+            right: 0,
+            bottom: isMobileMenuOpen ? 0 : 'auto',
+            backgroundColor: 'white',
+            zIndex: 1030,
+            height: isMobileMenuOpen ? 'calc(100vh - 56px)' : 'auto',
+            overflowY: isMobileMenuOpen ? 'auto' : 'visible',
+            padding: isMobileMenuOpen ? '1rem' : 0
+          }}>
             <ul className="navbar-nav ms-auto align-items-center">
               {/* Properties Dropdown */}
               <li className="nav-item dropdown position-static">
@@ -95,6 +146,7 @@ export default function Navbar() {
                   role="button"
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
+                  onClick={handleNavLinkClick}
                 >
                   Search by Location
                   <FontAwesomeIcon icon={faChevronDown} className="ms-1 nav-dropdown-icon" />
@@ -106,28 +158,28 @@ export default function Navbar() {
                       <div className="col-lg-3">
                         <h6 className="fw-bold" style={{ color: 'var(--primary-pink)' }}>Property Types</h6>
                         <div className="d-flex flex-column gap-2">
-                          <Link href="/listings" className="dropdown-item rounded-2 px-3 py-2 text-dark">
+                          <Link href="/listings" className="dropdown-item rounded-2 px-3 py-2 text-dark" onClick={handleNavLinkClick}>
                             <FontAwesomeIcon icon={faSearch} className="me-2" />
                             All Properties
                           </Link>
-                          <Link href="/listings?type=apartment" className="dropdown-item rounded-2 px-3 py-2 text-dark">
+                          <Link href="/listings?type=apartment" className="dropdown-item rounded-2 px-3 py-2 text-dark" onClick={handleNavLinkClick}>
                             <FontAwesomeIcon icon={faBuilding} className="me-2" />
                             Apartments
                           </Link>
-                          <Link href="/listings?type=house" className="dropdown-item rounded-2 px-3 py-2 text-dark">
+                          <Link href="/listings?type=house" className="dropdown-item rounded-2 px-3 py-2 text-dark" onClick={handleNavLinkClick}>
                             <FontAwesomeIcon icon={faHouse} className="me-2" />
                             Houses
                           </Link>
-                          <Link href="/listings?type=mansion" className="dropdown-item rounded-2 px-3 py-2 text-dark">
+                          <Link href="/listings?type=mansion" className="dropdown-item rounded-2 px-3 py-2 text-dark" onClick={handleNavLinkClick}>
                             <FontAwesomeIcon icon={faCity} className="me-2" />
                             Mansions
                           </Link>
                           <div className="dropdown-divider my-2"></div>
-                          <Link href="/listings/search" className="dropdown-item rounded-2 px-3 py-2 text-dark">
+                          <Link href="/listings/search" className="dropdown-item rounded-2 px-3 py-2 text-dark" onClick={handleNavLinkClick}>
                             <FontAwesomeIcon icon={faSearch} className="me-2" />
                             Advanced Search
                           </Link>
-                          <Link href="/listings/featured" className="dropdown-item rounded-2 px-3 py-2 text-dark">
+                          <Link href="/listings/featured" className="dropdown-item rounded-2 px-3 py-2 text-dark" onClick={handleNavLinkClick}>
                             <FontAwesomeIcon icon={faHeart} className="me-2" />
                             Featured Listings
                           </Link>
@@ -144,6 +196,7 @@ export default function Navbar() {
                                 key={city.id} 
                                 href={`/cities/${city.id}`} 
                                 className="dropdown-item rounded-2 px-3 py-2 text-dark"
+                                onClick={handleNavLinkClick}
                               >
                                 <FontAwesomeIcon icon={faLocationDot} className="me-2" />
                                 {city.name}
@@ -156,6 +209,7 @@ export default function Navbar() {
                                 key={city.id} 
                                 href={`/cities/${city.id}`} 
                                 className="dropdown-item rounded-2 px-3 py-2 text-dark"
+                                onClick={handleNavLinkClick}
                               >
                                 <FontAwesomeIcon icon={faLocationDot} className="me-2" />
                                 {city.name}
@@ -164,7 +218,7 @@ export default function Navbar() {
                           </div>
                         </div>
                         <div className="mt-3">
-                          <Link href="/cities" className="dropdown-item rounded-2 px-3 py-2 text-dark fw-medium">
+                          <Link href="/cities" className="dropdown-item rounded-2 px-3 py-2 text-dark fw-medium" onClick={handleNavLinkClick}>
                             <FontAwesomeIcon icon={faCompass} className="me-2" />
                             View All City Guides
                           </Link>
@@ -180,13 +234,14 @@ export default function Navbar() {
                               key={base.id} 
                               href={`/bases/${base.id}`} 
                               className="dropdown-item rounded-2 px-3 py-2 text-dark"
+                              onClick={handleNavLinkClick}
                             >
                               <FontAwesomeIcon icon={faShieldAlt} className="me-2" />
                               {base.name}
                             </Link>
                           ))}
                           <div className="dropdown-divider my-2"></div>
-                          <Link href="/bases" className="dropdown-item rounded-2 px-3 py-2 text-dark fw-medium">
+                          <Link href="/bases" className="dropdown-item rounded-2 px-3 py-2 text-dark fw-medium" onClick={handleNavLinkClick}>
                             <FontAwesomeIcon icon={faCompass} className="me-2" />
                             View All Base Guides
                           </Link>
@@ -196,8 +251,8 @@ export default function Navbar() {
                   </div>
                 </div>
               </li>
-
-              {/* Resources Dropdown */}
+              
+              {/* Moving Resources Dropdown */}
               <li className="nav-item dropdown">
                 <Link 
                   href="/resources" 
@@ -205,6 +260,7 @@ export default function Navbar() {
                   role="button"
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
+                  onClick={handleNavLinkClick}
                 >
                   Moving Resources
                   <FontAwesomeIcon icon={faChevronDown} className="ms-1 nav-dropdown-icon" />
@@ -215,28 +271,28 @@ export default function Navbar() {
                   </div>
                   <div className="p-3">
                     <div className="d-flex flex-column gap-2">
-                      <Link href="/guides" className="dropdown-item rounded-2 px-3 py-2 text-dark">
+                      <Link href="/guides" className="dropdown-item rounded-2 px-3 py-2 text-dark" onClick={handleNavLinkClick}>
                         <FontAwesomeIcon icon={faCompass} className="me-2" />
                         City Guides
                       </Link>
-                      <Link href="/moving-tips" className="dropdown-item rounded-2 px-3 py-2 text-dark">
+                      <Link href="/moving-tips" className="dropdown-item rounded-2 px-3 py-2 text-dark" onClick={handleNavLinkClick}>
                         <FontAwesomeIcon icon={faHouse} className="me-2" />
                         Moving Tips
                       </Link>
-                      <Link href="/cost-of-living" className="dropdown-item rounded-2 px-3 py-2 text-dark">
+                      <Link href="/cost-of-living" className="dropdown-item rounded-2 px-3 py-2 text-dark" onClick={handleNavLinkClick}>
                         <FontAwesomeIcon icon={faMoneyBillWave} className="me-2" />
                         Cost of Living
                       </Link>
                       <div className="dropdown-divider my-2"></div>
-                      <Link href="/about" className="dropdown-item rounded-2 px-3 py-2 text-dark">
+                      <Link href="/about" className="dropdown-item rounded-2 px-3 py-2 text-dark" onClick={handleNavLinkClick}>
                         <FontAwesomeIcon icon={faInfoCircle} className="me-2" />
                         About OkinawaNow
                       </Link>
-                      <Link href="/faq" className="dropdown-item rounded-2 px-3 py-2 text-dark">
+                      <Link href="/faq" className="dropdown-item rounded-2 px-3 py-2 text-dark" onClick={handleNavLinkClick}>
                         <FontAwesomeIcon icon={faQuestionCircle} className="me-2" />
                         FAQ
                       </Link>
-                      <Link href="/contact" className="dropdown-item rounded-2 px-3 py-2 text-dark">
+                      <Link href="/contact" className="dropdown-item rounded-2 px-3 py-2 text-dark" onClick={handleNavLinkClick}>
                         <FontAwesomeIcon icon={faPhone} className="me-2" />
                         Contact Us
                       </Link>
@@ -247,7 +303,7 @@ export default function Navbar() {
               
               {/* Our Services Link */}
               <li className="nav-item">
-                <Link href="/services" className="nav-link text-dark">
+                <Link href="/services" className="nav-link text-dark" onClick={handleNavLinkClick}>
                   Our Services
                 </Link>
               </li>
@@ -271,11 +327,11 @@ export default function Navbar() {
                       <h6 className="mb-0 fw-bold" style={{ color: 'var(--primary-pink)' }}>My Account</h6>
                     </div>
                     <div className="p-2">
-                      <Link href="/favorites" className="dropdown-item rounded-2 px-3 py-2 text-dark">
+                      <Link href="/favorites" className="dropdown-item rounded-2 px-3 py-2 text-dark" onClick={handleNavLinkClick}>
                         <FontAwesomeIcon icon={faHeart} className="me-2" />
                         My Favorites
                       </Link>
-                      <Link href="/tours" className="dropdown-item rounded-2 px-3 py-2 text-dark">
+                      <Link href="/tours" className="dropdown-item rounded-2 px-3 py-2 text-dark" onClick={handleNavLinkClick}>
                         <FontAwesomeIcon icon={faCalendarAlt} className="me-2" />
                         My Tours
                       </Link>
@@ -283,7 +339,7 @@ export default function Navbar() {
                       {isAdmin && (
                         <>
                           <div className="dropdown-divider my-2"></div>
-                          <Link href="/admin" className="dropdown-item rounded-2 px-3 py-2 text-dark">
+                          <Link href="/admin" className="dropdown-item rounded-2 px-3 py-2 text-dark" onClick={handleNavLinkClick}>
                             <FontAwesomeIcon icon={faTachometerAlt} className="me-2" />
                             Admin Dashboard
                           </Link>
@@ -291,7 +347,10 @@ export default function Navbar() {
                       )}
                       
                       <div className="dropdown-divider my-2"></div>
-                      <button className="dropdown-item rounded-2 px-3 py-2 text-dark" onClick={handleSignOut}>
+                      <button 
+                        onClick={handleSignOut}
+                        className="dropdown-item rounded-2 px-3 py-2 text-dark"
+                      >
                         <FontAwesomeIcon icon={faSignOut} className="me-2" />
                         Sign Out
                       </button>

@@ -91,6 +91,58 @@ export default function RootLayout({
                     integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
                     crossOrigin="anonymous"
                 />
+                
+                {/* Custom script for mobile menu handling */}
+                <Script id="mobile-menu-fix">
+                    {`
+                    document.addEventListener('DOMContentLoaded', function() {
+                        // Initialize all dropdowns
+                        var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
+                        var dropdownList = dropdownElementList.map(function(dropdownToggleEl) {
+                            return new bootstrap.Dropdown(dropdownToggleEl);
+                        });
+                        
+                        // Handle mobile menu
+                        var handleMobileDropdowns = function() {
+                            if (window.innerWidth < 992) {
+                                // For mobile: prevent default behavior and manually toggle dropdown
+                                document.querySelectorAll('.dropdown-toggle').forEach(function(element) {
+                                    element.addEventListener('click', function(e) {
+                                        if (window.innerWidth < 992) {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            
+                                            // Toggle dropdown manually
+                                            var parent = this.closest('.dropdown');
+                                            var menu = parent.querySelector('.dropdown-menu');
+                                            
+                                            if (menu.classList.contains('show')) {
+                                                menu.classList.remove('show');
+                                            } else {
+                                                // Close all other dropdowns
+                                                document.querySelectorAll('.dropdown-menu.show').forEach(function(openMenu) {
+                                                    if (openMenu !== menu) {
+                                                        openMenu.classList.remove('show');
+                                                    }
+                                                });
+                                                menu.classList.add('show');
+                                            }
+                                        }
+                                    });
+                                });
+                            }
+                        };
+                        
+                        // Run on page load
+                        handleMobileDropdowns();
+                        
+                        // Run when window is resized
+                        window.addEventListener('resize', function() {
+                            handleMobileDropdowns();
+                        });
+                    });
+                    `}
+                </Script>
             </body>
         </html>
     );
